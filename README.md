@@ -27,7 +27,7 @@ Without keys, the site stays fully usable in demo mode so you can test booking U
 
 ## Deploy On Vercel
 
-This project uses `server.js` as its Express entrypoint so Vercel can serve the website and the Razorpay API routes together.
+This project includes Vercel Functions in `api/` for online checkout and keeps `server.js` for local development.
 
 For real payments, set these variables in the Vercel project environment settings and redeploy:
 
