@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Book premium rooms and banquet stays at Hotel Gokul Inn & Banquet, Vapi with Wi-Fi, breakfast, parking, restaurant, and smooth checkout." />
+    <title>Hotel Gokul Inn & Banquet | Vapi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+    <link rel="apple-touch-icon" href="assets/favicon.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=20260525-availability-layout2" />
+    <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+    <script src="app.js?v=20260525-availability-layout2" defer></script>
+  </head>
+  <body>
+    <div class="preloader" id="preloader" aria-label="Loading Gokul Inn website">
+      <div class="preloader-card">
+        <img src="assets/gokul-inn-logo-transparent.png" alt="Gokul Inn logo" />
+        <span></span>
+      </div>
+    </div>
+    <header class="site-header">
+      <a class="brand nav-tab active" href="#top" data-page-target="home" aria-label="Hotel Gokul Inn home">
+        <img src="assets/gokul-inn-logo-transparent.png" alt="Gokul Inn logo" />
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a class="nav-tab" href="#rooms" data-page-target="rooms">Rooms</a>
+        <a class="nav-tab" href="#restaurant" data-page-target="restaurant">Restaurant</a>
+        <a class="nav-tab" href="#amenities" data-page-target="amenities">Amenities</a>
+        <a class="nav-tab" href="#reviews" data-page-target="reviews">Reviews</a>
+        <a class="nav-tab" href="#availability" data-page-target="availability">Booking</a>
+      </nav>
+      <a class="header-cta nav-tab" href="#availability" data-page-target="availability"><i data-lucide="calendar-check"></i><span>Book now</span></a>
+    </header>
+
+    <main id="top">
+      <section class="hero page-view active" data-page="home">
+        <div class="hero-media" aria-hidden="true">
+          <img src="assets/gallery/hotel-exterior.jpg" alt="" />
+        </div>
+        <div class="hero-shade"></div>
+        <div class="hero-content" data-animate>
+          <p class="eyebrow">Vapi East stays with banquet hospitality</p>
+          <h1>Hotel Gokul Inn & Banquet</h1>
+          <p class="hero-copy">A polished hotel and banquet destination in Gita Nagar, Vapi with comfortable rooms, free Wi-Fi, breakfast, parking, restaurant service, and a smooth booking experience.</p>
+          <div class="hero-actions">
+            <a class="primary-button nav-tab" href="#availability" data-page-target="availability"><i data-lucide="bed-double"></i><span>Reserve a room</span></a>
+            <a class="ghost-button nav-tab" href="#rooms" data-page-target="rooms"><i data-lucide="sparkles"></i><span>Explore rooms</span></a>
+          </div>
+        </div>
+        <form class="quick-booking" id="quickBooking" data-animate aria-label="Quick booking search" onsubmit="return window.handleQuickBookingSubmit?.(event)">
+          <label>
+            <span>Check-in</span>
+            <div class="date-control">
+              <input type="date" id="quickCheckIn" required onclick="window.openBookingCalendar?.('quickCheckIn', event)" onfocus="window.openBookingCalendar?.('quickCheckIn', event)" />
+              <button type="button" class="date-trigger" data-date-for="quickCheckIn" aria-label="Open check-in calendar" onclick="window.openBookingCalendar?.('quickCheckIn', event)"><i data-lucide="calendar-days"></i></button>
+            </div>
+          </label>
+          <label>
+            <span>Check-out</span>
+            <div class="date-control">
+              <input type="date" id="quickCheckOut" required onclick="window.openBookingCalendar?.('quickCheckOut', event)" onfocus="window.openBookingCalendar?.('quickCheckOut', event)" />
+              <button type="button" class="date-trigger" data-date-for="quickCheckOut" aria-label="Open check-out calendar" onclick="window.openBookingCalendar?.('quickCheckOut', event)"><i data-lucide="calendar-days"></i></button>
+            </div>
+          </label>
+          <label>
+            <span>Guests</span>
+            <input type="number" id="quickGuests" min="1" max="8" value="2" required />
+          </label>
+          <a class="quick-submit nav-tab" id="quickFindButton" href="#availability" data-page-target="availability" onclick="window.handleQuickBookingSubmit?.(event)"><i data-lucide="search"></i><span>Find stays</span></a>
+        </form>
+      </section>
+
+      <section class="stats-band home-support active" data-page-support="home" data-animate>
+        <article><strong>4.5</strong><span>Google rating</span></article>
+        <article><strong>93</strong><span>Total reviews</span></article>
+        <article><strong>24/7</strong><span>Room service support</span></article>
+        <article><strong>Vapi</strong><span>East, Gita Nagar</span></article>
+      </section>
+
+      <section class="section intro-grid home-support active" data-page-support="home" data-animate>
+        <div>
+          <p class="eyebrow">Inspired by emerald hospitality and warm banquet lighting</p>
+          <h2>A premium identity for a trusted Vapi stay.</h2>
+        </div>
+        <p>Hotel Gokul Inn & Banquet is presented with a calm emerald, warm teak, ivory, and gold accent palette. The design keeps the property professional for business travellers, families, banquet guests, and visitors looking for a comfortable stay near Vapi East.</p>
+      </section>
+
+      <section class="section trust-section home-support active" data-page-support="home" data-animate>
+        <div class="trust-card">
+          <i data-lucide="map-pin"></i>
+          <strong>Near Vapi Railway Station</strong>
+          <span>Geeta Nagar location with quick access to Vapi East, markets, transport, and business visits.</span>
+        </div>
+        <div class="trust-card">
+          <i data-lucide="star"></i>
+          <strong>4.5 Google rating</strong>
+          <span>Guests mention location, stay experience, cooperative staff, vegetarian food, Wi-Fi, and laundry.</span>
+        </div>
+        <div class="trust-card">
+          <i data-lucide="building-2"></i>
+          <strong>Rooms, restaurant, banquet</strong>
+          <span>Stay, dine, and host small events in one property with room service and in-house dining.</span>
+        </div>
+      </section>
+
+      <section class="section gallery-section home-support active" data-page-support="home" data-animate>
+        <div class="section-heading">
+          <p class="eyebrow">Property glimpse</p>
+          <h2>Real spaces guests will see.</h2>
+        </div>
+        <div class="gallery-grid">
+          <figure class="gallery-feature">
+            <img src="assets/gallery/hotel-exterior.jpg" alt="Hotel Gokul Inn exterior" />
+            <figcaption>Hotel Gokul Inn & Banquet</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/gallery/room-bright.jpg" alt="Hotel Gokul Inn deluxe room" />
+            <figcaption>Deluxe Room</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/gallery/corridor-plant.jpg" alt="Hotel Gokul Inn corridor" />
+            <figcaption>Guest Corridor</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/gallery/hotel-night.jpg" alt="Hotel Gokul Inn and restaurant facade at night" />
+            <figcaption>Restaurant Front</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/gallery/hotel-facade-close.jpg" alt="Hotel Gokul Inn facade close view" />
+            <figcaption>Facade Detail</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/gallery/corridor-long.jpg" alt="Hotel Gokul Inn long corridor" />
+            <figcaption>Room Floor</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/gallery/room-curtains.jpg" alt="Hotel Gokul Inn room with curtains" />
+            <figcaption>Premium Bedding</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/gallery/room-city-view.jpg" alt="Hotel Gokul Inn room with city view" />
+            <figcaption>City View Room</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/gallery/room-warm.jpg" alt="Hotel Gokul Inn warm room lighting" />
+            <figcaption>Warm Suite Lighting</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="section rooms-section page-view" id="rooms" data-page="rooms">
+        <div class="section-heading" data-animate>
+          <p class="eyebrow">Select your stay</p>
+          <h2>Rooms built for comfort</h2>
+          <p class="search-summary">Choose between practical deluxe rooms, upgraded super deluxe comfort, and a larger family room. Each room selection carries dates, guest count, and pricing into checkout.</p>
+        </div>
+        <div class="room-grid" id="roomGrid"></div>
+        <div class="info-grid" data-animate>
+          <article>
+            <i data-lucide="clock"></i>
+            <h3>Stay timing</h3>
+            <p>Standard check-in is 12:00 PM and check-out is 11:00 AM. Guests can add arrival notes during checkout.</p>
+          </article>
+          <article>
+            <i data-lucide="badge-info"></i>
+            <h3>Guest policy</h3>
+            <p>Minimum check-in age is 18. Valid guest identification may be requested at the property.</p>
+          </article>
+          <article>
+            <i data-lucide="ban"></i>
+            <h3>Property notes</h3>
+            <p>Pets are not allowed, and bachelor or bachelorette parties are not accommodated at the property.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section availability-section page-view" id="availability" data-page="availability">
+        <div class="section-heading" data-animate>
+          <p class="eyebrow">Available stays</p>
+          <h2>Choose a room before checkout</h2>
+          <p class="search-summary" id="searchSummary">Select dates and guests to see matching rooms.</p>
+        </div>
+        <div class="availability-grid" id="availabilityGrid"></div>
+      </section>
+
+      <section class="restaurant-band page-view" id="restaurant" data-page="restaurant" data-animate>
+        <div class="restaurant-copy">
+          <p class="eyebrow">In-house dining</p>
+          <h2>Restaurant & Banquet Dining</h2>
+          <p>Madhuvan Restaurant supports family dining, vegetarian meals, Indian cuisine, room-side convenience, and banquet-ready food service for guests staying at Hotel Gokul Inn.</p>
+          <div class="restaurant-tags">
+            <span>Dining area</span>
+            <span>Vegetarian friendly</span>
+            <span>Banquet friendly</span>
+            <span>Indian cuisine</span>
+          </div>
+        </div>
+        <div class="restaurant-card">
+          <img src="assets/madhuvan-restaurant-logo-transparent.png" alt="Madhuvan Restaurant logo" />
+          <div>
+            <strong>Food and banquet support</strong>
+            <span>Breakfast is included, and vegetarian meals can be requested during checkout.</span>
+          </div>
+        </div>
+        <div class="restaurant-details">
+          <article><i data-lucide="utensils"></i><strong>Family-friendly restaurant</strong><span>Suitable for hotel guests, families, and banquet visitors.</span></article>
+          <article><i data-lucide="leaf"></i><strong>Vegetarian options</strong><span>Helpful for travellers looking for reliable vegetarian food in Vapi.</span></article>
+          <article><i data-lucide="concierge-bell"></i><strong>Room service support</strong><span>Meals and guest requests can be coordinated with the hotel team.</span></article>
+        </div>
+      </section>
+
+      <section class="section amenities-section page-view" id="amenities" data-page="amenities">
+        <div class="section-heading" data-animate>
+          <p class="eyebrow">Everything expected</p>
+          <h2>Hotel amenities</h2>
+          <p class="search-summary">Public listing details mention restaurant, Wi-Fi, parking, room service, air conditioning, power backup, lift access, housekeeping, laundry, luggage assistance, CCTV, security, and breakfast.</p>
+        </div>
+        <div class="amenity-grid" id="amenityGrid"></div>
+        <div class="amenity-details" data-animate>
+          <article>
+            <h3>Basic facilities</h3>
+            <p>Wi-Fi, parking, room service, air conditioning, power backup, elevator access, housekeeping, newspaper, and laundry service.</p>
+          </article>
+          <article>
+            <h3>Guest services</h3>
+            <p>Multilingual staff, luggage assistance, reception support, living room/common area access, and first-aid service.</p>
+          </article>
+          <article>
+            <h3>Safety and rooms</h3>
+            <p>CCTV, fire extinguishers, security alarms, security guard, flat-screen TV, toiletries, mineral water, and private bathrooms.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section reviews-section page-view" id="reviews" data-page="reviews">
+        <div class="section-heading" data-animate>
+          <p class="eyebrow">Google Business & guest confidence</p>
+          <h2>Reviews, location, and booking profile</h2>
+          <p class="search-summary">Connected with public Google Business actions for directions and reviews, plus indexed Booking.com profile highlights.</p>
+        </div>
+        <div class="reviews-layout compact">
+          <div class="review-panel" data-animate>
+            <div class="rating-lockup">
+              <strong>4.5</strong>
+              <span>Google rating from 93 reviews</span>
+            </div>
+            <div class="review-actions">
+              <a class="primary-button" href="https://www.google.com/maps/search/?api=1&query=20.3721328,72.9094135&query_place_id=ChIJT7wvQADP4DsRrs1HdGNCDZo" target="_blank" rel="noopener"><i data-lucide="map"></i><span>Open Google profile</span></a>
+              <a class="ghost-light-button" href="https://search.google.com/local/writereview?placeid=ChIJT7wvQADP4DsRrs1HdGNCDZo" target="_blank" rel="noopener"><i data-lucide="message-square-plus"></i><span>Write a review</span></a>
+            </div>
+            <div class="review-topic-grid">
+              <span>Near Vapi station</span>
+              <span>Cooperative staff</span>
+              <span>Vegetarian food</span>
+              <span>Room service</span>
+              <span>Wi-Fi</span>
+              <span>Laundry</span>
+            </div>
+          </div>
+        </div>
+        <iframe class="map-frame" title="Hotel Gokul Inn Google map" loading="lazy" src="https://www.google.com/maps?q=20.3721328,72.9094135&z=16&output=embed"></iframe>
+      </section>
+
+      <section class="booking-section page-view" id="booking" data-page="booking">
+        <div class="booking-copy" data-animate>
+          <p class="eyebrow">Guest details</p>
+          <h2>Add your details, then pay securely.</h2>
+          <p>Your room, dates, guests, and pricing are carried into this step. Add the guest details and optional services, then continue to payment.</p>
+          <ul>
+            <li><i data-lucide="shield-check"></i><span>Tax and nightly total calculation</span></li>
+            <li><i data-lucide="users"></i><span>Guest and room capacity checks</span></li>
+            <li><i data-lucide="credit-card"></i><span>Secure online payment gateway</span></li>
+          </ul>
+        </div>
+        <div class="booking-panel" data-animate>
+          <form id="bookingForm">
+            <div class="selected-stay-card" id="selectedStaySummary" aria-live="polite"></div>
+            <div class="form-grid">
+              <label>
+                <span>Full name</span>
+                <input type="text" id="guestName" placeholder="Guest name" required />
+              </label>
+              <label>
+                <span>Mobile number</span>
+                <input type="tel" id="guestPhone" placeholder="+91 98765 43210" required />
+              </label>
+              <label class="booking-hidden-field">
+                <span>Check-in date</span>
+                <div class="date-control">
+                  <input type="date" id="checkInDate" required onclick="window.openBookingCalendar?.('checkInDate', event)" onfocus="window.openBookingCalendar?.('checkInDate', event)" />
+                  <button type="button" class="date-trigger" data-date-for="checkInDate" aria-label="Open check-in calendar" onclick="window.openBookingCalendar?.('checkInDate', event)"><i data-lucide="calendar-days"></i></button>
+                </div>
+              </label>
+              <label class="booking-hidden-field">
+                <span>Check-out date</span>
+                <div class="date-control">
+                  <input type="date" id="checkOutDate" required onclick="window.openBookingCalendar?.('checkOutDate', event)" onfocus="window.openBookingCalendar?.('checkOutDate', event)" />
+                  <button type="button" class="date-trigger" data-date-for="checkOutDate" aria-label="Open check-out calendar" onclick="window.openBookingCalendar?.('checkOutDate', event)"><i data-lucide="calendar-days"></i></button>
+                </div>
+              </label>
+              <label>
+                <span>Check-in time</span>
+                <input type="time" id="checkInTime" value="12:00" required />
+              </label>
+              <label>
+                <span>Check-out time</span>
+                <input type="time" id="checkOutTime" value="11:00" required />
+              </label>
+              <label>
+                <span>Guests</span>
+                <input type="number" id="guestCount" min="1" max="8" value="2" required />
+              </label>
+              <label>
+                <span>Rooms</span>
+                <input type="number" id="roomCount" min="1" max="4" value="1" required />
+              </label>
+              <label class="wide booking-hidden-field">
+                <span>Room type</span>
+                <select id="roomType" required></select>
+              </label>
+              <label class="wide">
+                <span>Special request</span>
+                <textarea id="specialRequest" rows="3" placeholder="Early arrival, meal preference, extra bedding..."></textarea>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <label><input type="checkbox" id="mealPlan" /> Add breakfast and dinner plan</label>
+              <label><input type="checkbox" id="pickup" /> Request local pickup help</label>
+            </div>
+            <div class="checkout-box">
+              <div>
+                <span>Stay total</span>
+                <strong id="totalAmount">INR 0</strong>
+              </div>
+              <button class="primary-button" type="submit" id="payButton"><i data-lucide="lock-keyhole"></i><span>Pay</span></button>
+            </div>
+            <p class="form-note" id="bookingMessage" role="status"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="payment-modal" id="paymentModal">
+      <form method="dialog" class="payment-card" id="paymentForm">
+        <button class="icon-close" value="cancel" aria-label="Close payment"><i data-lucide="x"></i></button>
+        <p class="eyebrow">Secure checkout</p>
+        <h2>Payment option</h2>
+        <p class="modal-copy">Review the booking summary and continue with the payment option. Connect the live Razorpay keys on the server to collect real online payments.</p>
+        <div class="payment-summary" id="paymentSummary"></div>
+        <button class="primary-button pay-button" type="submit"><i data-lucide="badge-check"></i><span>Confirm booking</span></button>
+      </form>
+    </dialog>
+
+    <div class="date-picker" id="datePicker" hidden></div>
+
+    <a class="whatsapp-float" href="https://wa.me/917600661149?text=Hello%20Hotel%20Gokul%20Inn%2C%20I%20want%20to%20book%20a%20room." target="_blank" rel="noopener" aria-label="Chat with Hotel Gokul Inn on WhatsApp">
+      <i data-lucide="message-circle"></i>
+      <span>WhatsApp</span>
+    </a>
+
+    <footer class="site-footer">
+      <div>
+        <img src="assets/gokul-inn-logo-transparent.png" alt="Gokul Inn logo" />
+        <p>9WC5+WMJ, Vapi East, Gita Nagar, Vapi, Gujarat 396191, India<br />Phone: +91 76006 61149</p>
+      </div>
+      <a class="nav-tab" href="#availability" data-page-target="availability">Reserve your stay</a>
+    </footer>
+  </body>
+</html>

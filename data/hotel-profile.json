@@ -1,0 +1,116 @@
+{
+  "source": "User-provided Google Business Profile data.",
+  "name": "Hotel Gokul Inn & Banquet",
+  "categories": ["Hotel", "Banquet Hall"],
+  "address": "9WC5+WMJ, Vapi East, Gita Nagar, Vapi, Gujarat 396191, India",
+  "neighborhood": "Vapi East, Gita Nagar",
+  "city": "Vapi",
+  "state": "Gujarat",
+  "country": "India",
+  "postalCode": "396191",
+  "phone": "+91 76006 61149",
+  "coordinates": {
+    "latitude": 20.3721328,
+    "longitude": 72.9094135
+  },
+  "rating": 4.5,
+  "totalReviews": 93,
+  "reviewBreakdown": {
+    "5": 72,
+    "4": 8,
+    "3": 5,
+    "2": 1,
+    "1": 7
+  },
+  "status": {
+    "permanentlyClosed": false,
+    "temporarilyClosed": false,
+    "claimedBusiness": true
+  },
+  "amenities": [
+    "Free Wi-Fi",
+    "Free breakfast",
+    "Free parking",
+    "Air conditioning",
+    "Laundry service",
+    "Room service",
+    "Restaurant",
+    "Kitchens in some rooms"
+  ],
+  "notAvailable": ["Pool", "Fitness center"],
+  "topReviewTopics": [
+    "location near vapi station",
+    "location",
+    "room",
+    "stay",
+    "cooperative staff",
+    "vegetarian food",
+    "WiFi",
+    "behaviour",
+    "laundry",
+    "call"
+  ],
+  "bookingPricesApprox": {
+    "officialStayFlexi": "$17",
+    "agoda": "$17",
+    "bluepillow": "$18",
+    "expedia": "$21",
+    "hotelsCom": "$21",
+    "orbitz": "$21",
+    "bookingCom": "$23"
+  },
+  "publicTravelSiteExtract": {
+    "note": "Publicly visible/indexed travel-site details checked on 2026-05-24. Live prices and policies can change.",
+    "sources": [
+      {
+        "name": "MakeMyTrip",
+        "url": "https://www.makemytrip.com/hotels/amenities-of-hotel_gokul_inn_banquet-details-vapi.html",
+        "facts": [
+          "3 minutes walk to Vapi Railway Station",
+          "Restaurant, Wi-Fi, smoke detector, parking, room service, air conditioning, power backup, elevator/lift, housekeeping, newspaper, laundry service",
+          "Multilingual staff, luggage assistance, first-aid services, toiletries, mineral water, dining area, CCTV, fire extinguishers, security alarms, security guard, flat-screen TV, living room, reception, breakfast"
+        ]
+      },
+      {
+        "name": "Goibibo",
+        "url": "https://www.goibibo.com/hotels/gokul-inn-banquet-hotel-in-vapi-6844607156758189320/",
+        "facts": [
+          "3-star hotel in Geeta Nagar, Vapi",
+          "3 minutes walk to Vapi Railway Station",
+          "Smooth check-in/check-out process, flexible policies, and friendly management mentioned in listing text",
+          "Deluxe Room and Executive Room listings found; Executive Room shows 176 sq.ft, king bed, 1 bathroom in indexed data"
+        ]
+      },
+      {
+        "name": "Booking.com",
+        "url": "https://www.booking.com/hotel/in/gokul-inn-amp-banquet.html",
+        "facts": [
+          "Hotel Gokul Inn & Banquet in Vapi",
+          "Special requests can be added in the next step",
+          "Breakfast included and Deluxe Room appeared in indexed snippets"
+        ]
+      },
+      {
+        "name": "Agoda",
+        "url": "https://www.agoda.com/hotel-gokul-inn/hotel/vapi-in.html",
+        "facts": [
+          "Located in Geeta Nagar, Vapi",
+          "Listing notes that bookings of more than 5 rooms may have different policies and supplements"
+        ]
+      },
+      {
+        "name": "LateRooms",
+        "url": "https://www.laterooms.com/hotel/vapi/hotel-gokul-inn--banquet/",
+        "facts": [
+          "3-star hotel with restaurant",
+          "Air-conditioned rooms with free Wi-Fi and private bathroom"
+        ]
+      }
+    ]
+  },
+  "technicalIds": {
+    "placeId": "ChIJT7wvQADP4DsRrs1HdGNCDZo",
+    "knowledgeGraphId": "/g/11xz28l_98",
+    "cid": "11100601651458198958"
+  }
+}
