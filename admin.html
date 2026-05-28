@@ -6,23 +6,25 @@
     <meta name="robots" content="noindex, nofollow" />
     <title>Admin Panel | Hotel Gokul Inn & Banquet</title>
     <link rel="icon" type="image/png" href="assets/favicon.png" />
-    <link rel="stylesheet" href="styles.css?v=20260528-admin-pages1" />
-    <link rel="stylesheet" href="admin.css?v=20260528-admin-pages1" />
+    <link rel="stylesheet" href="styles.css?v=20260528-creative-admin1" />
+    <link rel="stylesheet" href="admin.css?v=20260528-creative-admin1" />
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
-    <script src="admin.js?v=20260528-admin-pages1" defer></script>
+    <script src="admin.js?v=20260528-creative-admin1" defer></script>
   </head>
   <body class="admin-body">
     <main class="admin-shell">
       <section class="admin-login" id="adminLogin">
         <img src="assets/gokul-inn-logo-transparent.png" alt="Gokul Inn logo" />
-        <h1>Hotel Gokul Inn Admin</h1>
-        <p>Use the admin PIN to manage counter bookings, room stock, banquet enquiries, and website content privately.</p>
+        <h1>Admin Login</h1>
+        <p>Use your private counter PIN to manage Hotel Gokul Inn bookings, room stock, banquet enquiries, and website content.</p>
         <form id="adminLoginForm">
           <label>
             <span>Admin PIN</span>
             <input type="password" id="adminPin" placeholder="Enter PIN" required />
           </label>
-          <button class="primary-button" type="submit"><i data-lucide="shield-check"></i><span>Open dashboard</span></button>
+          <button class="primary-button" type="submit"><i data-lucide="shield-check"></i><span>Login</span></button>
+          <button class="admin-forgot" type="button" id="forgotPin">Forgot PIN?</button>
+          <p class="form-note" id="forgotPinMessage" role="status"></p>
         </form>
       </section>
 
@@ -42,6 +44,10 @@
         <div class="admin-stats" id="adminStats"></div>
 
         <nav class="admin-nav" aria-label="Admin sections">
+          <div class="admin-sidebar-brand">
+            <img src="assets/gokul-inn-logo-transparent.png" alt="Gokul Inn logo" />
+            <span>Hotel Operations</span>
+          </div>
           <button class="admin-nav-button active" type="button" data-admin-page-target="overview"><i data-lucide="layout-dashboard"></i><span>Overview</span></button>
           <button class="admin-nav-button" type="button" data-admin-page-target="bookings"><i data-lucide="receipt-text"></i><span>Bookings</span></button>
           <button class="admin-nav-button" type="button" data-admin-page-target="availability"><i data-lucide="bed-double"></i><span>Availability</span></button>

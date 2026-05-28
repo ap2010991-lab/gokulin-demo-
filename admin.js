@@ -374,6 +374,9 @@ document.addEventListener("DOMContentLoaded", () => {
   byId("contentForm").addEventListener("submit", (event) => saveContent(event).catch((error) => alert(error.message)));
   byId("roomContentForm").addEventListener("submit", (event) => saveContent(event).catch((error) => alert(error.message)));
   byId("bookingSearch").addEventListener("input", renderBookings);
+  byId("forgotPin").addEventListener("click", () => {
+    byId("forgotPinMessage").textContent = "Please contact the owner or website administrator to reset the private counter PIN.";
+  });
   document.addEventListener("click", (event) => {
     const trigger = event.target.closest("[data-admin-page-target]");
     if (!trigger) return;
