@@ -6,10 +6,10 @@
     <meta name="robots" content="noindex, nofollow" />
     <title>Admin Panel | Hotel Gokul Inn & Banquet</title>
     <link rel="icon" type="image/png" href="assets/favicon.png" />
-    <link rel="stylesheet" href="styles.css?v=20260528-private-admin1" />
-    <link rel="stylesheet" href="admin.css?v=20260528-private-admin1" />
+    <link rel="stylesheet" href="styles.css?v=20260528-admin-pages1" />
+    <link rel="stylesheet" href="admin.css?v=20260528-admin-pages1" />
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
-    <script src="admin.js?v=20260528-private-admin1" defer></script>
+    <script src="admin.js?v=20260528-admin-pages1" defer></script>
   </head>
   <body class="admin-body">
     <main class="admin-shell">
@@ -41,15 +41,62 @@
 
         <div class="admin-stats" id="adminStats"></div>
 
-        <section class="admin-card">
+        <nav class="admin-nav" aria-label="Admin sections">
+          <button class="admin-nav-button active" type="button" data-admin-page-target="overview"><i data-lucide="layout-dashboard"></i><span>Overview</span></button>
+          <button class="admin-nav-button" type="button" data-admin-page-target="bookings"><i data-lucide="receipt-text"></i><span>Bookings</span></button>
+          <button class="admin-nav-button" type="button" data-admin-page-target="availability"><i data-lucide="bed-double"></i><span>Availability</span></button>
+          <button class="admin-nav-button" type="button" data-admin-page-target="content"><i data-lucide="file-pen-line"></i><span>Website content</span></button>
+          <button class="admin-nav-button" type="button" data-admin-page-target="rooms"><i data-lucide="image-plus"></i><span>Room editor</span></button>
+          <button class="admin-nav-button" type="button" data-admin-page-target="banquet"><i data-lucide="party-popper"></i><span>Banquet</span></button>
+          <button class="admin-nav-button" type="button" data-admin-page-target="settings"><i data-lucide="settings"></i><span>Settings</span></button>
+        </nav>
+
+        <section class="admin-page active" data-admin-page="overview">
+          <div class="admin-overview-grid">
+            <article class="admin-card">
+              <div class="admin-card-head">
+                <div>
+                  <p class="eyebrow">Today at counter</p>
+                  <h2>Operations overview</h2>
+                  <p>Use this page for a quick read of room bookings, online payments, banquet requests and pending counter balance.</p>
+                </div>
+              </div>
+              <div class="overview-actions">
+                <button class="primary-button" type="button" data-admin-page-target="bookings"><i data-lucide="receipt-text"></i><span>View bookings</span></button>
+                <button class="ghost-light-button" type="button" data-admin-page-target="availability"><i data-lucide="bed-double"></i><span>Update room stock</span></button>
+                <button class="ghost-light-button" type="button" data-admin-page-target="banquet"><i data-lucide="party-popper"></i><span>Banquet enquiries</span></button>
+              </div>
+            </article>
+            <article class="admin-card">
+              <div class="admin-card-head">
+                <div>
+                  <p class="eyebrow">Recent hotel bookings</p>
+                  <h2>Latest room activity</h2>
+                </div>
+              </div>
+              <div class="mini-list" id="recentBookingRows"></div>
+            </article>
+            <article class="admin-card">
+              <div class="admin-card-head">
+                <div>
+                  <p class="eyebrow">Recent event requests</p>
+                  <h2>Banquet follow-ups</h2>
+                </div>
+              </div>
+              <div class="mini-list" id="recentBanquetRows"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="admin-page" data-admin-page="content">
           <div class="admin-card-head">
             <div>
               <p class="eyebrow">Website content manager</p>
-              <h2>Edit page text and room cards</h2>
-              <p>Changes saved here update the public website after refresh. Use full image paths such as assets/gallery/room-bright.jpg or a hosted image URL.</p>
+              <h2>Edit public page text</h2>
+              <p>Update the main website copy here. Changes are used by the public website after refresh.</p>
             </div>
           </div>
-          <form class="content-form" id="contentForm">
+          <form class="admin-card content-form" id="contentForm">
             <div class="form-grid">
               <label class="wide"><span>Hero title</span><input id="editHeroTitle" type="text" /></label>
               <label class="wide"><span>Hero description</span><textarea id="editHeroCopy" rows="3"></textarea></label>
@@ -58,29 +105,44 @@
               <label class="wide"><span>Restaurant description</span><textarea id="editRestaurantCopy" rows="3"></textarea></label>
               <label class="wide"><span>Banquet description</span><textarea id="editBanquetCopy" rows="3"></textarea></label>
             </div>
-            <div class="admin-card-head room-editor-head">
-              <div>
-                <p class="eyebrow">Room editor</p>
-                <h2>Edit, hide or restore room categories</h2>
-              </div>
-              <button class="primary-button" type="submit"><i data-lucide="save"></i><span>Save website content</span></button>
+            <div class="form-actions">
+              <button class="primary-button" id="saveContentText" type="submit"><i data-lucide="save"></i><span>Save website text</span></button>
+              <button class="ghost-light-button" type="button" data-admin-page-target="rooms"><i data-lucide="image-plus"></i><span>Edit room cards</span></button>
             </div>
-            <div class="room-editor-grid" id="roomEditorGrid"></div>
             <p class="form-note" id="contentMessage" role="status"></p>
           </form>
         </section>
 
-        <section class="admin-card">
+        <section class="admin-page" data-admin-page="rooms">
+          <form class="admin-card content-form" id="roomContentForm">
+            <div class="admin-card-head room-editor-head">
+              <div>
+                <p class="eyebrow">Room editor</p>
+                <h2>Edit, hide or restore room categories</h2>
+                <p>Change room names, photos, capacity, features and rate cards. Use full image paths such as assets/gallery/room-bright.jpg or a hosted image URL.</p>
+              </div>
+              <button class="primary-button" type="submit"><i data-lucide="save"></i><span>Save room cards</span></button>
+            </div>
+            <div class="room-editor-grid" id="roomEditorGrid"></div>
+            <p class="form-note" id="roomContentMessage" role="status"></p>
+          </form>
+        </section>
+
+        <section class="admin-page" data-admin-page="availability">
+          <article class="admin-card">
           <div class="admin-card-head">
             <div>
               <p class="eyebrow">Availability manager</p>
               <h2>Add, remove or mark rooms fully booked</h2>
+              <p>These numbers control what visitors can select on the booking flow. Set any room to zero to show it as fully booked.</p>
             </div>
           </div>
           <div class="inventory-grid" id="inventoryGrid"></div>
+          </article>
         </section>
 
-        <section class="admin-card">
+        <section class="admin-page" data-admin-page="bookings">
+          <article class="admin-card">
           <div class="admin-card-head">
             <div>
               <p class="eyebrow">Confirmed booking list</p>
@@ -103,13 +165,16 @@
               <tbody id="bookingRows"></tbody>
             </table>
           </div>
+          </article>
         </section>
 
-        <section class="admin-card">
+        <section class="admin-page" data-admin-page="banquet">
+          <article class="admin-card">
           <div class="admin-card-head">
             <div>
               <p class="eyebrow">Banquet enquiries</p>
               <h2>Event and banquet booking requests</h2>
+              <p>Track new event requests and update status after calling the guest.</p>
             </div>
           </div>
           <div class="booking-table-wrap">
@@ -126,6 +191,39 @@
               </thead>
               <tbody id="banquetRows"></tbody>
             </table>
+          </div>
+          </article>
+        </section>
+
+        <section class="admin-page" data-admin-page="settings">
+          <div class="settings-grid">
+            <article class="admin-card">
+              <div class="admin-card-head">
+                <div>
+                  <p class="eyebrow">Private access</p>
+                  <h2>Admin panel settings</h2>
+                  <p>This page is noindex and hidden from the public navigation. Keep the admin link and PIN only with the counter team.</p>
+                </div>
+              </div>
+              <div class="settings-list">
+                <div><span>Public website</span><a href="index.html#top">Open website</a></div>
+                <div><span>Booking page</span><a href="index.html#booking">Open booking flow</a></div>
+                <div><span>Admin storage</span><strong>Bookings, inventory and content APIs</strong></div>
+              </div>
+            </article>
+            <article class="admin-card">
+              <div class="admin-card-head">
+                <div>
+                  <p class="eyebrow">Recommended workflow</p>
+                  <h2>Counter team usage</h2>
+                  <p>Refresh the dashboard at the start of each shift, update room stock after offline bookings, and mark banquet leads after follow-up calls.</p>
+                </div>
+              </div>
+              <div class="overview-actions">
+                <button class="primary-button" id="refreshAdminSecondary" type="button"><i data-lucide="refresh-cw"></i><span>Refresh data</span></button>
+                <button class="ghost-light-button" type="button" data-admin-page-target="availability"><i data-lucide="bed-double"></i><span>Manage rooms</span></button>
+              </div>
+            </article>
           </div>
         </section>
       </section>

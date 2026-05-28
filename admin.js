@@ -66,6 +66,7 @@ const currency = (value) => `INR ${Math.round(Number(value || 0)).toLocaleString
 const byId = (id) => document.getElementById(id);
 let adminPin = localStorage.getItem("gokulAdminPin") || "";
 let adminState = { bookings: [], inventory: {}, banquetBookings: [], content: structuredClone(defaultContent) };
+let activeAdminPage = "overview";
 
 function escapeHtml(value = "") {
   return String(value)
@@ -127,6 +128,43 @@ function renderStats() {
     ["Room stock", roomStock],
     ["Banquet requests", adminState.banquetBookings?.length || 0]
   ].map(([label, value]) => `<article class="admin-stat"><span>${label}</span><strong>${value}</strong></article>`).join("");
+}
+
+function showAdminPage(page = "overview") {
+  const nextPage = document.querySelector(`[data-admin-page="${page}"]`) ? page : "overview";
+  activeAdminPage = nextPage;
+  document.querySelectorAll("[data-admin-page]").forEach((section) => {
+    section.classList.toggle("active", section.dataset.adminPage === nextPage);
+  });
+  document.querySelectorAll("[data-admin-page-target]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.adminPageTarget === nextPage);
+  });
+  window.location.hash = nextPage;
+  window.lucide?.createIcons();
+}
+
+function renderMiniLists() {
+  const latestBookings = adminState.bookings.slice(0, 4);
+  byId("recentBookingRows").innerHTML = latestBookings.length ? latestBookings.map((booking) => `
+    <button class="mini-list-row" type="button" data-admin-page-target="bookings">
+      <span>
+        <strong>${escapeHtml(booking.guest || "Guest booking")}</strong>
+        <small>${escapeHtml(booking.room || "-")} | ${escapeHtml(booking.checkIn || "-")} to ${escapeHtml(booking.checkOut || "-")}</small>
+      </span>
+      <b>${currency(booking.paidAmount || booking.paymentDue || 0)}</b>
+    </button>
+  `).join("") : `<p class="empty-note">No room bookings yet.</p>`;
+
+  const latestBanquet = (adminState.banquetBookings || []).slice(0, 4);
+  byId("recentBanquetRows").innerHTML = latestBanquet.length ? latestBanquet.map((item) => `
+    <button class="mini-list-row" type="button" data-admin-page-target="banquet">
+      <span>
+        <strong>${escapeHtml(item.name || "Banquet enquiry")}</strong>
+        <small>${escapeHtml(item.eventType || "-")} | ${escapeHtml(item.eventDate || "-")} | ${escapeHtml(String(item.guests || "-"))} guests</small>
+      </span>
+      <b>${escapeHtml(item.status || "new")}</b>
+    </button>
+  `).join("") : `<p class="empty-note">No banquet enquiries yet.</p>`;
 }
 
 function renderContentEditor() {
@@ -207,6 +245,7 @@ async function saveContent(event) {
   adminState.content = mergeContent(payload.content);
   renderContentEditor();
   byId("contentMessage").textContent = "Website content updated. Refresh the public website to see the changes.";
+  byId("roomContentMessage").textContent = "Room cards updated. Refresh the public website to see the changes.";
   window.lucide?.createIcons();
 }
 
@@ -314,6 +353,7 @@ async function loadAdmin() {
   byId("adminLogin").hidden = true;
   byId("adminDashboard").hidden = false;
   renderStats();
+  renderMiniLists();
   renderContentEditor();
   renderInventory();
   renderBookings();
@@ -330,11 +370,20 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   byId("refreshAdmin").addEventListener("click", () => loadAdmin().catch((error) => alert(error.message)));
+  byId("refreshAdminSecondary").addEventListener("click", () => loadAdmin().catch((error) => alert(error.message)));
   byId("contentForm").addEventListener("submit", (event) => saveContent(event).catch((error) => alert(error.message)));
+  byId("roomContentForm").addEventListener("submit", (event) => saveContent(event).catch((error) => alert(error.message)));
   byId("bookingSearch").addEventListener("input", renderBookings);
+  document.addEventListener("click", (event) => {
+    const trigger = event.target.closest("[data-admin-page-target]");
+    if (!trigger) return;
+    showAdminPage(trigger.dataset.adminPageTarget);
+  });
   if (adminPin) {
     byId("adminPin").value = adminPin;
     loadAdmin().catch(() => {});
   }
+  const requestedPage = window.location.hash.replace("#", "");
+  if (requestedPage) showAdminPage(requestedPage);
   window.lucide?.createIcons();
 });
