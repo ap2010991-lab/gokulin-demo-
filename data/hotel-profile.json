@@ -9,6 +9,39 @@
   "country": "India",
   "postalCode": "396191",
   "phone": "+91 76006 61149",
+  "locationStatement": "Opposite Vapi Railway Station (East)",
+  "hotelBrochureFacts": {
+    "source": "User-provided Blue Green Elegant Modern Luxury Hotel Presentation.pdf and Blue Elegant Best Hotel Instagram Post (2).pdf",
+    "roomCount": 53,
+    "roomCategories": ["Deluxe Room", "Super Deluxe Room", "Suite Room"],
+    "roomHighlights": [
+      "Complimentary buffet breakfast",
+      "High-speed Wi-Fi access",
+      "In-room tea/coffee maker",
+      "Air conditioning",
+      "Smart TV",
+      "Housekeeping",
+      "24/7 room service"
+    ],
+    "restaurant": {
+      "name": "Madhuvan Restaurant",
+      "phone": "+91 76006 61139",
+      "serviceHours": "8:00 AM to 11:00 PM",
+      "cuisines": ["Punjabi", "Gujarati", "South Indian", "Chinese"],
+      "features": ["Pure vegetarian", "Jain-friendly options"]
+    },
+    "banquet": {
+      "capacity": "Up to 150 seating arrangement",
+      "eventTypes": ["Corporate Events", "Meetings", "Parties", "Marriage", "Anniversary", "Special Occasions"],
+      "morningSession": "09:00 AM to 03:00 PM",
+      "eveningSession": "05:00 PM to 10:00 PM",
+      "packages": {
+        "Silver": "INR 600 + GST",
+        "Gold": "INR 650 + GST",
+        "Platinum": "INR 700 + GST"
+      }
+    }
+  },
   "coordinates": {
     "latitude": 20.3721328,
     "longitude": 72.9094135

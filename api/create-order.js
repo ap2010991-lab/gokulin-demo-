@@ -6,7 +6,7 @@ export default async function handler(request, response) {
     return;
   }
 
-  const amount = Number(request.body?.amount);
+  const amount = Number(request.body?.paymentAmount || request.body?.amount);
   const bookingId = String(request.body?.bookingId || `GIN-${Date.now()}`);
   const keyId = process.env.RAZORPAY_KEY_ID || "";
   const keySecret = process.env.RAZORPAY_KEY_SECRET || "";

@@ -41,3 +41,7 @@ Until those keys are configured, deployed checkout remains in demo confirmation 
 ## Business Data
 
 `data/hotel-profile.json` stores the extracted hotel profile facts. Replace it with your Apify Google Maps export whenever your Apify token/export is ready.
+
+## Banquet Content
+
+The Banquet page uses the hotel photographs and information supplied in the hotel presentation and event post PDFs. The downloadable menu at `assets/docs/gokul-inn-banquet-menu.pdf` contains the Silver, Gold, and Platinum banquet package information shown on the page.

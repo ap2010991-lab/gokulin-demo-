@@ -3,17 +3,48 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Book premium rooms and banquet stays at Hotel Gokul Inn & Banquet, Vapi with Wi-Fi, breakfast, parking, restaurant, and smooth checkout." />
+    <meta name="description" content="Hotel Gokul Inn & Banquet is one of the best hotels in Vapi near Vapi Railway Station, with rooms, Madhuvan vegetarian restaurant, banquet hall, online booking, Razorpay payments and partial room booking." />
+    <meta name="keywords" content="best hotel in Vapi, hotel in Vapi, hotels near Vapi railway station, hotel near Vapi station, Vapi East hotel, Gita Nagar hotel, Hotel Gokul Inn, Hotel Gokul Inn and Banquet, banquet hall in Vapi, wedding hall in Vapi, corporate event venue Vapi, rooms in Vapi, budget hotel Vapi, family hotel Vapi, vegetarian restaurant Vapi, Madhuvan Restaurant Vapi" />
+    <meta property="og:title" content="Hotel Gokul Inn & Banquet | Best Hotel Near Vapi Railway Station" />
+    <meta property="og:description" content="Book Deluxe, Super Deluxe, Suite and Royal Suite rooms in Vapi with breakfast options, partial payment, Madhuvan Restaurant and banquet hall for up to 150 guests." />
+    <meta property="og:image" content="assets/gallery/hotel-exterior.jpg" />
     <title>Hotel Gokul Inn & Banquet | Vapi</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="icon" type="image/png" href="assets/favicon.png" />
     <link rel="apple-touch-icon" href="assets/favicon.png" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260525-availability-layout2" />
+    <link rel="stylesheet" href="styles.css?v=20260528-final1" />
     <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
-    <script src="app.js?v=20260525-availability-layout2" defer></script>
+    <script src="app.js?v=20260528-final1" defer></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": ["Hotel", "EventVenue", "Restaurant"],
+        "name": "Hotel Gokul Inn & Banquet",
+        "description": "Hotel in Vapi near Vapi Railway Station with Deluxe Room, Super Deluxe Room, Suite Room, Royal Suite, Madhuvan pure vegetarian restaurant and banquet hall in Vapi.",
+        "telephone": "+91 76006 61149",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "9WC5+WMJ, Vapi East, Gita Nagar",
+          "addressLocality": "Vapi",
+          "addressRegion": "Gujarat",
+          "postalCode": "396191",
+          "addressCountry": "IN"
+        },
+        "geo": {"@type": "GeoCoordinates", "latitude": 20.3721328, "longitude": 72.9094135},
+        "amenityFeature": [
+          {"@type": "LocationFeatureSpecification", "name": "Free Wi-Fi"},
+          {"@type": "LocationFeatureSpecification", "name": "Breakfast option"},
+          {"@type": "LocationFeatureSpecification", "name": "Free parking"},
+          {"@type": "LocationFeatureSpecification", "name": "Banquet hall in Vapi"},
+          {"@type": "LocationFeatureSpecification", "name": "Pure vegetarian restaurant"}
+        ],
+        "aggregateRating": {"@type": "AggregateRating", "ratingValue": "4.5", "reviewCount": "93"},
+        "keywords": "best hotel in Vapi, hotel near Vapi railway station, banquet hall in Vapi, rooms in Vapi, Madhuvan Restaurant Vapi"
+      }
+    </script>
   </head>
   <body>
     <div class="preloader" id="preloader" aria-label="Loading Gokul Inn website">
@@ -29,6 +60,7 @@
       <nav class="nav-links" aria-label="Main navigation">
         <a class="nav-tab" href="#rooms" data-page-target="rooms">Rooms</a>
         <a class="nav-tab" href="#restaurant" data-page-target="restaurant">Restaurant</a>
+        <a class="nav-tab" href="#banquet" data-page-target="banquet">Banquet</a>
         <a class="nav-tab" href="#amenities" data-page-target="amenities">Amenities</a>
         <a class="nav-tab" href="#reviews" data-page-target="reviews">Reviews</a>
         <a class="nav-tab" href="#availability" data-page-target="availability">Booking</a>
@@ -43,9 +75,9 @@
         </div>
         <div class="hero-shade"></div>
         <div class="hero-content" data-animate>
-          <p class="eyebrow">Vapi East stays with banquet hospitality</p>
-          <h1>Hotel Gokul Inn & Banquet</h1>
-          <p class="hero-copy">A polished hotel and banquet destination in Gita Nagar, Vapi with comfortable rooms, free Wi-Fi, breakfast, parking, restaurant service, and a smooth booking experience.</p>
+          <p class="eyebrow">Opposite Vapi Railway Station (East)</p>
+          <h1 id="heroTitle">Hotel Gokul Inn & Banquet</h1>
+          <p class="hero-copy" id="heroCopy">Where comfort meets luxury: a trusted hotel in Vapi near Vapi Railway Station with 53 thoughtful rooms, Madhuvan pure vegetarian restaurant, online booking, partial payment, and a versatile banquet hall for celebrations and corporate gatherings of up to 150 guests.</p>
           <div class="hero-actions">
             <a class="primary-button nav-tab" href="#availability" data-page-target="availability"><i data-lucide="bed-double"></i><span>Reserve a room</span></a>
             <a class="ghost-button nav-tab" href="#rooms" data-page-target="rooms"><i data-lucide="sparkles"></i><span>Explore rooms</span></a>
@@ -75,18 +107,18 @@
       </section>
 
       <section class="stats-band home-support active" data-page-support="home" data-animate>
-        <article><strong>4.5</strong><span>Google rating</span></article>
-        <article><strong>93</strong><span>Total reviews</span></article>
-        <article><strong>24/7</strong><span>Room service support</span></article>
-        <article><strong>Vapi</strong><span>East, Gita Nagar</span></article>
+        <article><strong data-count="4.5">0</strong><span>Google rating</span></article>
+        <article><strong data-count="53">0</strong><span>Thoughtfully designed rooms</span></article>
+        <article><strong data-count="150">0</strong><span>Banquet seating capacity</span></article>
+        <article><strong>Vapi</strong><span>Opp. railway station east</span></article>
       </section>
 
       <section class="section intro-grid home-support active" data-page-support="home" data-animate>
         <div>
-          <p class="eyebrow">Inspired by emerald hospitality and warm banquet lighting</p>
-          <h2>A premium identity for a trusted Vapi stay.</h2>
+          <p class="eyebrow">Where comfort meets luxury</p>
+          <h2>A complete stay and event destination in Vapi.</h2>
         </div>
-        <p>Hotel Gokul Inn & Banquet is presented with a calm emerald, warm teak, ivory, and gold accent palette. The design keeps the property professional for business travellers, families, banquet guests, and visitors looking for a comfortable stay near Vapi East.</p>
+        <p>Strategically located directly opposite Vapi Railway Station (East), Hotel Gokul Inn welcomes business travellers, families, leisure guests, and visitors to the nearby GIDC with modern comfort, warm hospitality, dining, and event service in one address.</p>
       </section>
 
       <section class="section trust-section home-support active" data-page-support="home" data-animate>
@@ -102,8 +134,8 @@
         </div>
         <div class="trust-card">
           <i data-lucide="building-2"></i>
-          <strong>Rooms, restaurant, banquet</strong>
-          <span>Stay, dine, and host small events in one property with room service and in-house dining.</span>
+          <strong>Stay, dine and celebrate</strong>
+          <span>Deluxe, Super Deluxe, Suite and Royal Suite rooms, Madhuvan Restaurant, and a banquet hall with seating for up to 150.</span>
         </div>
       </section>
 
@@ -122,8 +154,8 @@
             <figcaption>Deluxe Room</figcaption>
           </figure>
           <figure>
-            <img src="assets/gallery/corridor-plant.jpg" alt="Hotel Gokul Inn corridor" />
-            <figcaption>Guest Corridor</figcaption>
+            <img src="assets/gallery/banquet-hall.jpg" alt="Hotel Gokul Inn banquet hall" />
+            <figcaption>Banquet Hall</figcaption>
           </figure>
           <figure>
             <img src="assets/gallery/hotel-night.jpg" alt="Hotel Gokul Inn and restaurant facade at night" />
@@ -134,16 +166,16 @@
             <figcaption>Facade Detail</figcaption>
           </figure>
           <figure>
-            <img src="assets/gallery/corridor-long.jpg" alt="Hotel Gokul Inn long corridor" />
-            <figcaption>Room Floor</figcaption>
+            <img src="assets/gallery/restaurant-interior.jpg" alt="Madhuvan Restaurant dining interior" />
+            <figcaption>Madhuvan Dining</figcaption>
           </figure>
           <figure>
             <img src="assets/gallery/room-curtains.jpg" alt="Hotel Gokul Inn room with curtains" />
             <figcaption>Premium Bedding</figcaption>
           </figure>
           <figure>
-            <img src="assets/gallery/room-city-view.jpg" alt="Hotel Gokul Inn room with city view" />
-            <figcaption>City View Room</figcaption>
+            <img src="assets/gallery/banquet-celebration.jpg" alt="Hotel Gokul Inn decorated celebration setup" />
+            <figcaption>Celebration Setup</figcaption>
           </figure>
           <figure>
             <img src="assets/gallery/room-warm.jpg" alt="Hotel Gokul Inn warm room lighting" />
@@ -156,25 +188,34 @@
         <div class="section-heading" data-animate>
           <p class="eyebrow">Select your stay</p>
           <h2>Rooms built for comfort</h2>
-          <p class="search-summary">Choose between practical deluxe rooms, upgraded super deluxe comfort, and a larger family room. Each room selection carries dates, guest count, and pricing into checkout.</p>
+          <p class="search-summary">Choose Deluxe Room, Super Deluxe Room, Suite Room and Royal Suite at Hotel Gokul Inn & Banquet, a hotel in Vapi near Vapi Railway Station with breakfast and without-breakfast rates, high-speed Wi-Fi, in-room tea and coffee, housekeeping and room service.</p>
+          <a class="ghost-light-button rate-link" href="assets/docs/gokul-inn-room-rate-list.pdf" target="_blank" rel="noopener"><i data-lucide="file-text"></i><span>View official room rate list</span></a>
         </div>
         <div class="room-grid" id="roomGrid"></div>
         <div class="info-grid" data-animate>
           <article>
             <i data-lucide="clock"></i>
-            <h3>Stay timing</h3>
-            <p>Standard check-in is 12:00 PM and check-out is 11:00 AM. Guests can add arrival notes during checkout.</p>
+            <h3>53 rooms</h3>
+            <p>A thoughtful collection of Deluxe, Super Deluxe and Suite Rooms designed for business and leisure stays.</p>
           </article>
           <article>
             <i data-lucide="badge-info"></i>
-            <h3>Guest policy</h3>
-            <p>Minimum check-in age is 18. Valid guest identification may be requested at the property.</p>
+            <h3>Rate-list pricing</h3>
+            <p>Official room tariff supports single and double occupancy, breakfast and without-breakfast options, plus extra bed rates.</p>
           </article>
           <article>
             <i data-lucide="ban"></i>
-            <h3>Property notes</h3>
-            <p>Pets are not allowed, and bachelor or bachelorette parties are not accommodated at the property.</p>
+            <h3>Guest service</h3>
+            <p>Complimentary buffet breakfast, daily housekeeping, 24-hour front desk assistance and room service.</p>
           </article>
+        </div>
+        <div class="room-rate-board" data-animate>
+          <img src="assets/gallery/actual/room-rate-info-board-enhanced.jpg" alt="Hotel Gokul Inn room tariff board" />
+          <div>
+            <p class="eyebrow">Official hotel tariff</p>
+            <h3>Clear room rates for every guest type.</h3>
+            <p>Deluxe, Super Deluxe, Suite and Royal Suite rates are shown with breakfast and without breakfast options. Extra person rates are available for breakfast plans and counter-assisted booking.</p>
+          </div>
         </div>
       </section>
 
@@ -187,29 +228,166 @@
         <div class="availability-grid" id="availabilityGrid"></div>
       </section>
 
+      <section class="section seo-section home-support active" data-page-support="home" data-animate>
+        <div class="section-heading">
+          <p class="eyebrow">Best hotel in Vapi search guide</p>
+          <h2>Why guests choose Hotel Gokul Inn & Banquet in Vapi.</h2>
+          <p class="search-summary">Hotel Gokul Inn & Banquet is positioned for travellers searching for the best hotel in Vapi, hotels near Vapi Railway Station, rooms in Vapi East, family hotel in Vapi, business hotel near GIDC Vapi, banquet hall in Vapi and pure vegetarian restaurant in Vapi.</p>
+        </div>
+        <div class="seo-grid">
+          <article><h3>Hotel near Vapi Railway Station</h3><p>The property is directly opposite Vapi Railway Station East in Gita Nagar, suitable for business travellers, family visits, railway passengers and short stays in Vapi.</p></article>
+          <article><h3>Rooms in Vapi with breakfast option</h3><p>Guests can book Deluxe, Super Deluxe, Suite and Royal Suite categories with transparent single/double rates, breakfast plans, partial payment and pay-at-counter balance support.</p></article>
+          <article><h3>Banquet hall in Vapi</h3><p>The banquet hall supports corporate events, meetings, marriage functions, anniversaries and parties with seating arrangements for up to 150 guests.</p></article>
+          <article><h3>Vegetarian restaurant in Vapi</h3><p>Madhuvan Restaurant serves pure vegetarian and Jain-friendly Punjabi, Gujarati, South Indian and Chinese food from breakfast through dinner.</p></article>
+        </div>
+      </section>
+
       <section class="restaurant-band page-view" id="restaurant" data-page="restaurant" data-animate>
         <div class="restaurant-copy">
           <p class="eyebrow">In-house dining</p>
-          <h2>Restaurant & Banquet Dining</h2>
-          <p>Madhuvan Restaurant supports family dining, vegetarian meals, Indian cuisine, room-side convenience, and banquet-ready food service for guests staying at Hotel Gokul Inn.</p>
+          <h2 id="restaurantTitle">Madhuvan Restaurant</h2>
+          <p id="restaurantCopy">Located at Hotel Gokul Inn opposite Vapi Railway Station, Madhuvan is a pure vegetarian, Jain-friendly multi-cuisine destination serving breakfast, brunch, lunch and dinner from 8:00 AM to 11:00 PM.</p>
           <div class="restaurant-tags">
             <span>Dining area</span>
-            <span>Vegetarian friendly</span>
-            <span>Banquet friendly</span>
-            <span>Indian cuisine</span>
+            <span>Pure vegetarian</span>
+            <span>Jain food</span>
+            <span>8 AM - 11 PM</span>
           </div>
         </div>
         <div class="restaurant-card">
-          <img src="assets/madhuvan-restaurant-logo-transparent.png" alt="Madhuvan Restaurant logo" />
+          <img class="restaurant-photo" src="assets/gallery/restaurant-interior.jpg" alt="Madhuvan Restaurant dining space" />
           <div>
-            <strong>Food and banquet support</strong>
-            <span>Breakfast is included, and vegetarian meals can be requested during checkout.</span>
+            <strong>Punjabi, Gujarati, South Indian and Chinese</strong>
+            <span>Order enquiries: +91 76006 61139</span>
           </div>
         </div>
         <div class="restaurant-details">
-          <article><i data-lucide="utensils"></i><strong>Family-friendly restaurant</strong><span>Suitable for hotel guests, families, and banquet visitors.</span></article>
-          <article><i data-lucide="leaf"></i><strong>Vegetarian options</strong><span>Helpful for travellers looking for reliable vegetarian food in Vapi.</span></article>
-          <article><i data-lucide="concierge-bell"></i><strong>Room service support</strong><span>Meals and guest requests can be coordinated with the hotel team.</span></article>
+          <article><i data-lucide="utensils"></i><strong>Multi-cuisine dining</strong><span>North Indian Punjabi, Gujarati, South Indian and Chinese dishes.</span></article>
+          <article><i data-lucide="leaf"></i><strong>Pure vegetarian & Jain</strong><span>Dedicated Jain-friendly meal options in a welcoming dining space.</span></article>
+          <article><i data-lucide="clock"></i><strong>Full-day service</strong><span>Breakfast through dinner, with service from 8:00 AM to 11:00 PM.</span></article>
+        </div>
+        <div class="restaurant-showcase restaurant-showcase-rich">
+          <article>
+            <img src="assets/gallery/restaurant-interior.jpg" alt="Madhuvan Restaurant seating area" />
+            <div>
+              <h3>Pure vegetarian family dining</h3>
+              <p>A calm restaurant space for families, hotel guests, railway travellers and local visitors looking for vegetarian food near Vapi Railway Station.</p>
+            </div>
+          </article>
+          <article>
+            <video src="assets/videos/buffet-service.mp4" controls muted preload="metadata" poster="assets/gallery/actual/buffet-service-enhanced.jpg"></video>
+            <div>
+              <h3>Buffet breakfast and event dining</h3>
+              <p>Fresh vegetarian buffet service, tea and coffee support, Jain-friendly selections and coordinated food service for hotel guests, meetings and banquet functions.</p>
+            </div>
+          </article>
+          <article>
+            <img src="assets/gallery/actual/buffet-service-enhanced.jpg" alt="Buffet counters at Hotel Gokul Inn" />
+            <div>
+              <h3>Banquet food service</h3>
+              <p>Coordinated buffet counters for meetings, functions, celebrations and group dining with vegetarian menu support.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="banquet-page page-view" id="banquet" data-page="banquet">
+        <div class="banquet-hero">
+          <img src="assets/gallery/banquet-hall.jpg" alt="Hotel Gokul Inn banquet hall arranged for an event" />
+          <div class="banquet-overlay"></div>
+          <div class="banquet-hero-copy" data-animate>
+            <p class="eyebrow">Gokul Inn Banquet Hall</p>
+            <h2 id="banquetTitle">Elegant moments, thoughtfully hosted.</h2>
+            <p id="banquetCopy">Directly opposite Vapi Railway Station (East), our versatile hall welcomes corporate events, meetings, parties, marriage functions, anniversaries and special occasions with seating arrangements for up to 150 guests.</p>
+            <div class="hero-actions">
+              <a class="primary-button" href="https://wa.me/917600661149?text=Hello%20Hotel%20Gokul%20Inn%2C%20I%20would%20like%20to%20plan%20a%20banquet%20event." target="_blank" rel="noopener"><i data-lucide="calendar-plus"></i><span>Plan an event</span></a>
+              <a class="ghost-button" href="assets/docs/gokul-inn-banquet-menu.pdf" target="_blank" rel="noopener"><i data-lucide="book-open"></i><span>View menu PDF</span></a>
+            </div>
+          </div>
+          <div class="banquet-capacity" data-animate><strong data-count="150">0</strong><span>Seating arrangement</span></div>
+        </div>
+        <div class="section banquet-details">
+          <div class="banquet-events" data-animate>
+            <span>Corporate events</span>
+            <span>Meetings</span>
+            <span>Parties</span>
+            <span>Marriage</span>
+            <span>Anniversary</span>
+            <span>Special occasions</span>
+          </div>
+          <div class="section-heading" data-animate>
+            <p class="eyebrow">Banquet menu packages</p>
+            <h2>Three vegetarian menus for your gathering.</h2>
+            <p class="search-summary">Package prices are per plate and GST is additional as stated in the supplied banquet menu.</p>
+          </div>
+          <div class="banquet-package-grid">
+            <article class="banquet-package" data-animate>
+              <p>Silver</p><h3>INR 600 <small>+ GST</small></h3>
+              <ul><li>Welcome drink, soup and starter - any one</li><li>Paneer and vegetable main course</li><li>Assorted roti, dal, rice and buttermilk</li><li>Sweet, ice cream, salad, papad and pickle</li></ul>
+            </article>
+            <article class="banquet-package featured" data-animate>
+              <p>Gold</p><h3>INR 650 <small>+ GST</small></h3>
+              <ul><li>Welcome drink - any one</li><li>Soup and veg starter - any two</li><li>Paneer and vegetable main course</li><li>Roti, sweet, dal, rice, buttermilk and ice cream</li></ul>
+            </article>
+            <article class="banquet-package" data-animate>
+              <p>Platinum</p><h3>INR 700 <small>+ GST</small></h3>
+              <ul><li>Welcome drinks, soups and starters - any two</li><li>Pasta and chaat - any one</li><li>Paneer, vegetable and Gujarati/Chinese vegetable</li><li>Two sweets, raita and mineral water 200 ml</li></ul>
+            </article>
+          </div>
+          <div class="banquet-media" data-animate>
+            <img src="assets/gallery/actual/banquet-hall-red-enhanced.jpg" alt="Banquet hall seating arrangement with red table setup" />
+            <img src="assets/gallery/actual/banquet-wide-enhanced.jpg" alt="Wide banquet hall arrangement at Hotel Gokul Inn" />
+          </div>
+          <div class="banquet-showcase" data-animate>
+            <article>
+              <img src="assets/gallery/actual/banquet-classroom-enhanced.jpg" alt="Banquet hall classroom seating" />
+              <h3>Flexible seating layouts</h3>
+              <p>Classroom, round-table, theatre and reception-style arrangements for business meetings, training sessions, family celebrations, engagements and wedding-related functions.</p>
+            </article>
+            <article>
+              <img src="assets/gallery/actual/reception-counter-front-enhanced.jpg" alt="Hotel Gokul Inn reception counter" />
+              <h3>Coordinated guest arrival</h3>
+              <p>Reception support, lift access, lobby seating and in-house room booking support help guests move smoothly from check-in to event floor.</p>
+            </article>
+            <article>
+              <video src="assets/videos/banquet-walkthrough.mp4" controls muted preload="metadata" poster="assets/gallery/actual/banquet-hall-red-enhanced.jpg"></video>
+              <h3>Banquet walkthrough</h3>
+              <p>Preview the event environment before planning seating, menu package and timing for your function.</p>
+            </article>
+          </div>
+          <div class="banquet-enquiry" data-animate>
+            <div>
+              <p class="eyebrow">Banquet booking</p>
+              <h2>Request availability for your event.</h2>
+              <p>Send the event date, guest count and preferred package. The request is saved for the admin panel when the Node server is running.</p>
+            </div>
+            <form id="banquetEnquiryForm">
+              <label><span>Name</span><input id="banquetName" type="text" placeholder="Your name" required /></label>
+              <label><span>Mobile number</span><input id="banquetPhone" type="tel" placeholder="+91 98765 43210" required /></label>
+              <label><span>Event date</span><input id="banquetDate" type="date" required /></label>
+              <label><span>Guests</span><input id="banquetGuests" type="number" min="20" max="150" value="80" required /></label>
+              <label><span>Event type</span><select id="banquetType"><option>Corporate event</option><option>Meeting</option><option>Marriage function</option><option>Anniversary</option><option>Birthday party</option><option>Other celebration</option></select></label>
+              <label><span>Package</span><select id="banquetPackage"><option>Silver - INR 600 + GST</option><option>Gold - INR 650 + GST</option><option>Platinum - INR 700 + GST</option></select></label>
+              <label class="wide"><span>Message</span><textarea id="banquetMessage" rows="3" placeholder="Lunch or dinner session, decoration, projector, special food requirements..."></textarea></label>
+              <button class="primary-button" type="submit"><i data-lucide="send"></i><span>Send banquet request</span></button>
+              <p class="form-note" id="banquetFormMessage" role="status"></p>
+            </form>
+          </div>
+          <div class="banquet-policy" data-animate>
+            <div>
+              <p class="eyebrow">Sessions</p>
+              <h3>Event timings</h3>
+              <p>Morning session: 09:00 AM - 03:00 PM<br />Evening session: 05:00 PM - 10:00 PM</p>
+            </div>
+            <ul>
+              <li>40% advance on confirmation; non-refundable on cancellation or postponement.</li>
+              <li>100% payment is due before 7 days of the function.</li>
+              <li>Charges apply to actual attendance or guaranteed count, whichever is higher.</li>
+              <li>Party limit is 4 hours; extra time is charged at INR 4,000 up to 11:00 PM.</li>
+              <li>Outside food, beverages and alcohol are not allowed on the premises.</li>
+              <li>Decoration, stage, projector and speaker arrangements are available at extra charge.</li>
+            </ul>
+          </div>
         </div>
       </section>
 
@@ -217,9 +395,35 @@
         <div class="section-heading" data-animate>
           <p class="eyebrow">Everything expected</p>
           <h2>Hotel amenities</h2>
-          <p class="search-summary">Public listing details mention restaurant, Wi-Fi, parking, room service, air conditioning, power backup, lift access, housekeeping, laundry, luggage assistance, CCTV, security, and breakfast.</p>
+          <p class="search-summary">The hotel brochure identifies 53 rooms with complimentary buffet breakfast, high-speed Wi-Fi, tea and coffee maker, toiletries, air conditioning, Smart TV, housekeeping, 24/7 room service and front desk assistance.</p>
         </div>
         <div class="amenity-grid" id="amenityGrid"></div>
+        <div class="amenity-experience" data-animate>
+          <div class="amenity-tabs" role="tablist" aria-label="Amenity highlights">
+            <button type="button" class="active" data-amenity-tab="comfort"><i data-lucide="bed-double"></i><span>Stay comfort</span></button>
+            <button type="button" data-amenity-tab="service"><i data-lucide="concierge-bell"></i><span>Guest service</span></button>
+            <button type="button" data-amenity-tab="safety"><i data-lucide="shield-check"></i><span>Safety</span></button>
+            <button type="button" data-amenity-tab="dining"><i data-lucide="utensils"></i><span>Dining & events</span></button>
+          </div>
+          <div class="amenity-panels">
+            <article class="active" data-amenity-panel="comfort">
+              <img src="assets/gallery/actual/room-tv-amenities-enhanced.jpg" alt="Room amenities with TV, tea and coffee maker" />
+              <div><h3>Room comfort that feels ready</h3><p>Smart TV, air conditioning, tea and coffee maker, bottled water, clean linen, toiletries and private bathroom support a smooth hotel stay in Vapi.</p></div>
+            </article>
+            <article data-amenity-panel="service">
+              <img src="assets/gallery/actual/reception-lobby-sofa-enhanced.jpg" alt="Hotel Gokul Inn reception and lobby" />
+              <div><h3>Counter team and reception support</h3><p>Front desk assistance, luggage help, lift access, housekeeping and room service are available for check-in guests, families and event visitors.</p></div>
+            </article>
+            <article data-amenity-panel="safety">
+              <img src="assets/gallery/actual/corridor-lift-enhanced.jpg" alt="Hotel corridor and lift access" />
+              <div><h3>Clean, secure and easy to move through</h3><p>CCTV, fire safety, lift access, well-lit corridors, security support and daily housekeeping keep the property practical for repeated business and family stays.</p></div>
+            </article>
+            <article data-amenity-panel="dining">
+              <img src="assets/gallery/actual/buffet-service-enhanced.jpg" alt="Buffet service at Hotel Gokul Inn" />
+              <div><h3>Breakfast, restaurant and banquet support</h3><p>Complimentary buffet breakfast, Madhuvan Restaurant, vegetarian food service and banquet catering make the hotel a complete stay and event destination.</p></div>
+            </article>
+          </div>
+        </div>
         <div class="amenity-details" data-animate>
           <article>
             <h3>Basic facilities</h3>
@@ -239,8 +443,8 @@
       <section class="section reviews-section page-view" id="reviews" data-page="reviews">
         <div class="section-heading" data-animate>
           <p class="eyebrow">Google Business & guest confidence</p>
-          <h2>Reviews, location, and booking profile</h2>
-          <p class="search-summary">Connected with public Google Business actions for directions and reviews, plus indexed Booking.com profile highlights.</p>
+          <h2>Reviews and location</h2>
+          <p class="search-summary">Open the verified Google Business location for directions or leave feedback after your stay, meal, or event.</p>
         </div>
         <div class="reviews-layout compact">
           <div class="review-panel" data-animate>
@@ -328,8 +532,14 @@
               </label>
             </div>
             <div class="toggle-row">
-              <label><input type="checkbox" id="mealPlan" /> Add breakfast and dinner plan</label>
+              <label><input type="checkbox" id="mealPlan" checked /> Include breakfast rate</label>
               <label><input type="checkbox" id="pickup" /> Request local pickup help</label>
+            </div>
+            <div class="payment-choice">
+              <p class="eyebrow">Payment choice</p>
+              <label><input type="radio" name="paymentOption" value="full" checked /> Pay full booking amount now</label>
+              <label><input type="radio" name="paymentOption" value="partial-300" /> Pay INR 300 advance now, rest at counter</label>
+              <label><input type="radio" name="paymentOption" value="partial-500" /> Pay INR 500 advance now, rest at counter</label>
             </div>
             <div class="checkout-box">
               <div>

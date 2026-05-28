@@ -5,55 +5,92 @@ const profile = {
   rating: 4.5,
   reviewCount: 93,
   amenities: [
-    "Restaurant",
-    "Free breakfast",
-    "Free Wi-Fi",
+    "Madhuvan Restaurant",
+    "Buffet breakfast",
+    "High-speed Wi-Fi",
     "Free parking",
     "Air conditioning",
-    "Laundry service",
-    "Room service",
-    "Banquet hall",
-    "Kitchens in some rooms",
-    "Vegetarian food"
+    "Tea / coffee maker",
+    "24/7 room service",
+    "Banquet hall up to 150",
+    "Daily housekeeping",
+    "Smart TV"
   ],
   rooms: [
     {
       id: "deluxe",
-      name: "Deluxe Double Room",
-      size: "165 sq.ft",
-      bed: "Double Bed",
+      name: "Deluxe Room",
+      size: "Premium comfort",
+      bed: "King / Twin Bed",
       bathrooms: 1,
       capacity: 2,
-      price: 3081,
-      tax: 366,
+      rates: {
+        withBreakfast: { single: 1449, double: 1799 },
+        withoutBreakfast: { single: 1349, double: 1599 }
+      },
       image: "assets/gallery/room-bright.jpg",
-      features: ["Air conditioning", "Room service", "Closet", "Private bathroom"]
+      features: ["Breakfast option", "High-speed Wi-Fi", "Tea/Coffee maker", "Private bathroom"]
     },
     {
       id: "super-deluxe",
       name: "Super Deluxe Room",
-      size: "165 sq.ft",
+      size: "Enhanced comfort",
       bed: "King Bed",
       bathrooms: 1,
       capacity: 2,
-      price: 3797,
-      tax: 452,
+      rates: {
+        withBreakfast: { single: 1649, double: 2049 },
+        withoutBreakfast: { single: 1549, double: 1849 }
+      },
       image: "assets/gallery/room-premium.jpg",
-      features: ["King bed", "Air conditioning", "Seating area", "Free Wi-Fi"]
+      features: ["Breakfast option", "Smart LED TV", "Work desk", "Premium toiletries"]
     },
     {
-      id: "family",
-      name: "Family Room",
-      size: "352 sq.ft",
-      bed: "2 Double Beds",
+      id: "suite",
+      name: "Suite Room",
+      size: "Spacious living area",
+      bed: "King Bed",
       bathrooms: 1,
-      capacity: 4,
-      price: 4514,
-      tax: 538,
+      capacity: 2,
+      rates: {
+        withBreakfast: { single: 2449, double: 3000 },
+        withoutBreakfast: { single: 2349, double: 2800 }
+      },
+      image: "assets/gallery/suite-room.jpg",
+      features: ["Breakfast option", "Tea/Coffee maker", "Work desk", "Bath amenities"]
+    },
+    {
+      id: "royal-suite",
+      name: "Royal Suite",
+      size: "Top category",
+      bed: "King Bed",
+      bathrooms: 1,
+      capacity: 2,
+      rates: {
+        withBreakfast: { single: null, double: 3499 },
+        withoutBreakfast: { single: null, double: 3299 }
+      },
       image: "assets/gallery/room-city-view.jpg",
-      features: ["Two double beds", "Large room", "Family seating", "Private bathroom"]
+      features: ["Breakfast option", "Spacious layout", "Smart LED TV", "Premium stay"]
     }
   ]
+};
+
+const defaultContent = {
+  heroTitle: "Hotel Gokul Inn & Banquet",
+  heroCopy: "Where comfort meets luxury: a trusted hotel in Vapi near Vapi Railway Station with 53 thoughtful rooms, Madhuvan pure vegetarian restaurant, online booking, partial payment, and a versatile banquet hall for celebrations and corporate gatherings of up to 150 guests.",
+  restaurantTitle: "Madhuvan Restaurant",
+  restaurantCopy: "Located at Hotel Gokul Inn opposite Vapi Railway Station, Madhuvan is a pure vegetarian, Jain-friendly multi-cuisine destination serving breakfast, brunch, lunch and dinner from 8:00 AM to 11:00 PM.",
+  banquetTitle: "Elegant moments, thoughtfully hosted.",
+  banquetCopy: "Directly opposite Vapi Railway Station (East), our versatile hall welcomes corporate events, meetings, parties, marriage functions, anniversaries and special occasions with seating arrangements for up to 150 guests.",
+  rooms: profile.rooms.map((room) => ({ ...room, active: true }))
+};
+
+const defaultInventory = {
+  "deluxe": 18,
+  "super-deluxe": 16,
+  "suite": 13,
+  "royal-suite": 6
 };
 
 const state = {
@@ -63,10 +100,50 @@ const state = {
   paymentConfig: {
     keyId: "",
     liveMode: false
+  },
+  availability: {
+    inventory: { ...defaultInventory },
+    bookings: []
   }
 };
 
 const formatMoney = (value) => `INR ${Math.round(value).toLocaleString("en-IN")}`;
+const extraBedRates = {
+  withBreakfast: 599,
+  withoutBreakfast: 499
+};
+
+function getRoomRate(room, guests = 2, roomCount = 1, includeBreakfast = true) {
+  const planKey = includeBreakfast ? "withBreakfast" : "withoutBreakfast";
+  const rates = room.rates[planKey];
+  const guestsPerRoom = Math.ceil(Number(guests || 1) / Math.max(1, Number(roomCount || 1)));
+  const preferredOccupancy = guestsPerRoom <= 1 && rates.single ? "single" : "double";
+  const amount = rates[preferredOccupancy] ?? rates.double ?? rates.single;
+
+  return {
+    amount,
+    occupancy: preferredOccupancy,
+    occupancyLabel: preferredOccupancy === "single" ? "Single occupancy" : "Double occupancy",
+    planKey,
+    planLabel: includeBreakfast ? "With breakfast" : "Without breakfast"
+  };
+}
+
+function rangesOverlap(startA, endA, startB, endB) {
+  return parseDateInput(startA) < parseDateInput(endB) && parseDateInput(endA) > parseDateInput(startB);
+}
+
+function getBookedRooms(roomId, checkIn, checkOut) {
+  return state.availability.bookings
+    .filter((booking) => booking.roomId === roomId && booking.status !== "cancelled" && rangesOverlap(checkIn, checkOut, booking.checkIn, booking.checkOut))
+    .reduce((sum, booking) => sum + Number(booking.roomCount || 1), 0);
+}
+
+function getAvailableRoomCount(roomId, checkIn = byId("checkInDate")?.value, checkOut = byId("checkOutDate")?.value) {
+  const total = Number(state.availability.inventory[roomId] ?? 0);
+  if (!checkIn || !checkOut) return total;
+  return Math.max(0, total - getBookedRooms(roomId, checkIn, checkOut));
+}
 
 const today = new Date();
 const tomorrow = new Date(today);
@@ -100,6 +177,44 @@ const nightsBetween = (start, end) => {
 };
 
 const byId = (id) => document.getElementById(id);
+const activeRooms = () => profile.rooms.filter((room) => room.active !== false);
+
+function mergeRoom(defaultRoom, savedRoom = {}) {
+  return {
+    ...defaultRoom,
+    ...savedRoom,
+    rates: {
+      withBreakfast: { ...defaultRoom.rates.withBreakfast, ...(savedRoom.rates?.withBreakfast || {}) },
+      withoutBreakfast: { ...defaultRoom.rates.withoutBreakfast, ...(savedRoom.rates?.withoutBreakfast || {}) }
+    },
+    features: Array.isArray(savedRoom.features) ? savedRoom.features : defaultRoom.features
+  };
+}
+
+function applySiteContent(content = {}) {
+  const merged = { ...defaultContent, ...content };
+  byId("heroTitle").textContent = merged.heroTitle;
+  byId("heroCopy").textContent = merged.heroCopy;
+  byId("restaurantTitle").textContent = merged.restaurantTitle;
+  byId("restaurantCopy").textContent = merged.restaurantCopy;
+  byId("banquetTitle").textContent = merged.banquetTitle;
+  byId("banquetCopy").textContent = merged.banquetCopy;
+
+  if (Array.isArray(merged.rooms)) {
+    const savedById = Object.fromEntries(merged.rooms.map((room) => [room.id, room]));
+    profile.rooms = defaultContent.rooms.map((room) => mergeRoom(room, savedById[room.id]));
+  }
+}
+
+async function loadSiteContent() {
+  try {
+    const response = await fetch("/api/content");
+    if (!response.ok) throw new Error("Content API unavailable.");
+    applySiteContent(await response.json());
+  } catch {
+    applySiteContent(defaultContent);
+  }
+}
 const calendarState = {
   input: null,
   month: new Date(today.getFullYear(), today.getMonth(), 1)
@@ -274,30 +389,38 @@ function renderRooms() {
   const roomGrid = byId("roomGrid");
   const roomType = byId("roomType");
 
-  roomGrid.innerHTML = profile.rooms.map((room) => `
-    <article class="room-card" data-room="${room.id}">
-      <img src="${room.image}" alt="${room.name}" loading="lazy" />
-      <div class="room-body">
-        <h3>${room.name}</h3>
-        <div class="room-meta">
-          <span>${room.size}</span>
-          <span>${room.bed}</span>
-          <span>Up to ${room.capacity} guests</span>
-        </div>
-        <p>${room.features.join(" | ")}</p>
-        <div class="room-price">
-          <div>
-            <strong>${formatMoney(room.price)}</strong>
-            <span>/ night + taxes</span>
+  roomGrid.innerHTML = activeRooms().map((room) => {
+    const singleRate = getRoomRate(room, 1, 1, true);
+    const doubleRate = getRoomRate(room, 2, 1, true);
+    return `
+      <article class="room-card" data-room="${room.id}">
+        <img src="${room.image}" alt="${room.name}" loading="lazy" />
+        <div class="room-body">
+          <h3>${room.name}</h3>
+          <div class="room-meta">
+            <span>${room.size}</span>
+            <span>${room.bed}</span>
+            <span>Up to ${room.capacity} guests</span>
           </div>
-          <button class="select-room" type="button" data-select-room="${room.id}">Select</button>
+          <p>${room.features.join(" | ")}</p>
+          <div class="rate-strip">
+            <span>Single ${singleRate.amount ? formatMoney(singleRate.amount) : "on double rate"}</span>
+            <span>Double ${formatMoney(doubleRate.amount)}</span>
+          </div>
+          <div class="room-price">
+            <div>
+              <strong>From ${formatMoney(singleRate.amount || doubleRate.amount)}</strong>
+              <span>/ night with breakfast</span>
+            </div>
+            <button class="select-room" type="button" data-select-room="${room.id}">Select</button>
+          </div>
         </div>
-      </div>
-    </article>
-  `).join("");
+      </article>
+    `;
+  }).join("");
 
-  roomType.innerHTML = profile.rooms.map((room) => `
-    <option value="${room.id}">${room.name} - ${formatMoney(room.price)} / night</option>
+  roomType.innerHTML = activeRooms().map((room) => `
+    <option value="${room.id}">${room.name}</option>
   `).join("");
 
   bindRoomSelection(roomGrid);
@@ -305,13 +428,17 @@ function renderRooms() {
 
 function buildRoomCard(room, options = {}) {
   const nights = options.nights || 1;
+  const guests = Number(options.guests || 1);
   const roomsNeeded = Math.max(1, Math.ceil((options.guests || 1) / room.capacity));
   const roomCount = options.showStayTotal ? roomsNeeded : 1;
-  const stayTotal = (room.price + room.tax) * nights * roomCount;
+  const rate = getRoomRate(room, guests, roomCount, true);
+  const stayTotal = rate.amount * nights * roomCount;
+  const available = options.checkIn && options.checkOut ? getAvailableRoomCount(room.id, options.checkIn, options.checkOut) : getAvailableRoomCount(room.id);
+  const canSelect = available >= roomCount;
   const capacityText = roomCount > 1 ? `${roomCount} rooms suggested` : `Up to ${room.capacity} guests`;
 
   return `
-    <article class="room-card ${options.showStayTotal ? "availability-card" : ""}" data-room="${room.id}">
+    <article class="room-card ${options.showStayTotal ? "availability-card compact-stay-card" : ""}" data-room="${room.id}">
       <img src="${room.image}" alt="${room.name}" loading="lazy" />
       <div class="room-body">
         <div class="room-title-row">
@@ -322,21 +449,23 @@ function buildRoomCard(room, options = {}) {
           <span>${room.size}</span>
           <span>${room.bed}</span>
           <span>${options.showStayTotal ? `${room.capacity} guests / room` : `Up to ${room.capacity} guests`}</span>
+          ${options.showStayTotal ? `<span>${available} available</span>` : ""}
         </div>
         <p>${room.features.join(" | ")}</p>
         ${options.showStayTotal ? `
           <div class="availability-detail">
-            <div><span>Nightly room price</span><strong>${formatMoney(room.price)}</strong></div>
-            <div><span>Taxes per night</span><strong>${formatMoney(room.tax)}</strong></div>
+            <div><span>Plan</span><strong>${rate.planLabel}</strong></div>
+            <div><span>Occupancy rate</span><strong>${rate.occupancyLabel}</strong></div>
+            <div><span>Nightly room price</span><strong>${formatMoney(rate.amount)}</strong></div>
             <div><span>${nights} night${nights > 1 ? "s" : ""} total</span><strong>${formatMoney(stayTotal)}</strong></div>
           </div>
         ` : ""}
         <div class="room-price">
           <div>
-            <strong>${options.showStayTotal ? formatMoney(stayTotal) : formatMoney(room.price)}</strong>
-            <span>${options.showStayTotal ? "estimated stay total" : "/ night + taxes"}</span>
+            <strong>${options.showStayTotal ? formatMoney(stayTotal) : formatMoney(rate.amount)}</strong>
+            <span>${options.showStayTotal ? "with breakfast estimate" : "/ night with breakfast"}</span>
           </div>
-          <button class="select-room" type="button" data-select-room="${room.id}" data-room-count="${roomCount}">Select</button>
+          <button class="select-room" type="button" data-select-room="${room.id}" data-room-count="${roomCount}" ${canSelect ? "" : "disabled"}>${canSelect ? "Select" : "Sold out"}</button>
         </div>
       </div>
     </article>
@@ -351,9 +480,11 @@ function renderAvailability() {
   const grid = byId("availabilityGrid");
 
   byId("searchSummary").textContent = `${formatDateLabel(checkIn)} to ${formatDateLabel(checkOut)} | ${nights} night${nights > 1 ? "s" : ""} | ${guests} guest${guests > 1 ? "s" : ""}`;
-  grid.innerHTML = profile.rooms.map((room) => buildRoomCard(room, {
+  grid.innerHTML = activeRooms().map((room) => buildRoomCard(room, {
     nights,
     guests,
+    checkIn,
+    checkOut,
     showStayTotal: true
   })).join("");
 
@@ -391,7 +522,7 @@ function renderAmenities() {
 }
 
 function getSelectedRoom() {
-  return profile.rooms.find((room) => room.id === byId("roomType").value) || profile.rooms[0];
+  return activeRooms().find((room) => room.id === byId("roomType").value) || activeRooms()[0] || profile.rooms[0];
 }
 
 function calculateTotal() {
@@ -400,20 +531,22 @@ function calculateTotal() {
   const roomCount = Number(byId("roomCount").value || 1);
   const guests = Number(byId("guestCount").value || 1);
   const capacity = room.capacity * roomCount;
-  const base = room.price * nights * roomCount;
-  const taxes = room.tax * nights * roomCount;
-  const meal = byId("mealPlan").checked ? guests * nights * 650 : 0;
+  const includeBreakfast = byId("mealPlan").checked;
+  const rate = getRoomRate(room, guests, roomCount, includeBreakfast);
+  const base = rate.amount * nights * roomCount;
+  const taxes = 0;
+  const meal = 0;
   const pickup = byId("pickup").checked ? 900 : 0;
   const total = base + taxes + meal + pickup;
 
   byId("totalAmount").textContent = formatMoney(total);
-  byId("bookingMessage").textContent = guests > capacity ? `${room.name} supports ${capacity} guest(s) for ${roomCount} room(s). Add more rooms or choose Family Room.` : "";
-  renderSelectedStaySummary({ room, nights, roomCount, guests, total });
+  byId("bookingMessage").textContent = guests > capacity ? `${room.name} supports ${capacity} guest(s) for ${roomCount} room(s). Add more rooms to continue.` : "";
+  renderSelectedStaySummary({ room, nights, roomCount, guests, total, rate });
 
-  return { room, nights, roomCount, guests, base, taxes, meal, pickup, total, capacity };
+  return { room, nights, roomCount, guests, base, taxes, meal, pickup, total, capacity, rate, includeBreakfast };
 }
 
-function renderSelectedStaySummary({ room, nights, roomCount, guests, total }) {
+function renderSelectedStaySummary({ room, nights, roomCount, guests, total, rate }) {
   const summary = byId("selectedStaySummary");
   if (!summary) return;
 
@@ -429,6 +562,10 @@ function renderSelectedStaySummary({ room, nights, roomCount, guests, total }) {
     <div>
       <span>Guests & rooms</span>
       <strong>${guests} guest${guests > 1 ? "s" : ""} | ${roomCount} room${roomCount > 1 ? "s" : ""}</strong>
+    </div>
+    <div>
+      <span>${rate?.planLabel || "Rate plan"}</span>
+      <strong>${rate?.occupancyLabel || "Selected rate"}</strong>
     </div>
     <div>
       <span>${nights} night${nights > 1 ? "s" : ""} estimate</span>
@@ -486,7 +623,7 @@ function showPage(page) {
 function initPageTabs() {
   const openPageFromHash = () => {
     const hash = window.location.hash.replace("#", "");
-    const knownPages = ["rooms", "availability", "restaurant", "amenities", "reviews", "booking"];
+    const knownPages = ["rooms", "availability", "restaurant", "banquet", "amenities", "reviews", "booking"];
     const initialPage = hash === "booking" ? "availability" : hash;
     showPage(knownPages.includes(initialPage) ? initialPage : "home");
   };
@@ -512,11 +649,101 @@ async function loadPaymentConfig() {
   }
 }
 
+async function loadAvailability() {
+  try {
+    const response = await fetch("/api/availability");
+    if (!response.ok) throw new Error("Availability API unavailable.");
+    const payload = await response.json();
+    state.availability = {
+      inventory: { ...defaultInventory, ...(payload.inventory || {}) },
+      bookings: payload.bookings || []
+    };
+  } catch {
+    state.availability = {
+      inventory: { ...defaultInventory },
+      bookings: []
+    };
+  }
+}
+
+function animateCounters() {
+  const counters = document.querySelectorAll("[data-count]");
+  if (!counters.length) return;
+
+  const runCounter = (item) => {
+    const target = Number(item.dataset.count);
+    const isDecimal = item.dataset.count.includes(".");
+    const duration = 1200;
+    const start = performance.now();
+
+    const tick = (now) => {
+      const progress = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const value = target * eased;
+      item.textContent = isDecimal ? value.toFixed(1) : Math.round(value).toLocaleString("en-IN");
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(tick);
+  };
+
+  if (!("IntersectionObserver" in window)) {
+    counters.forEach(runCounter);
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        runCounter(entry.target);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.4 });
+
+  counters.forEach((counter) => observer.observe(counter));
+}
+
+async function submitBanquetEnquiry(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const enquiry = {
+    id: `BANQ-${Date.now().toString().slice(-6)}`,
+    name: byId("banquetName").value,
+    phone: byId("banquetPhone").value,
+    eventDate: byId("banquetDate").value,
+    eventType: byId("banquetType").value,
+    guests: byId("banquetGuests").value,
+    package: byId("banquetPackage").value,
+    message: byId("banquetMessage").value,
+    status: "new",
+    createdAt: new Date().toISOString()
+  };
+
+  try {
+    const response = await fetch("/api/banquet-bookings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(enquiry)
+    });
+    if (!response.ok) throw new Error("Banquet enquiry could not be saved.");
+    byId("banquetFormMessage").textContent = "Banquet enquiry saved. Our team will contact you shortly.";
+    form.reset();
+  } catch {
+    const text = encodeURIComponent(`Hello Hotel Gokul Inn, I want to book the banquet. Name: ${enquiry.name}, Phone: ${enquiry.phone}, Date: ${enquiry.eventDate}, Guests: ${enquiry.guests}, Package: ${enquiry.package}`);
+    byId("banquetFormMessage").innerHTML = `Banquet enquiry is ready. <a href="https://wa.me/917600661149?text=${text}" target="_blank" rel="noopener">Send it on WhatsApp</a>.`;
+  }
+}
+
 function buildBooking(totals) {
+  const paymentOption = document.querySelector("input[name='paymentOption']:checked")?.value || "full";
+  const paymentDue = paymentOption === "partial-300" ? 300 : paymentOption === "partial-500" ? 500 : totals.total;
+
   return {
     id: `GIN-${Date.now().toString().slice(-6)}`,
     guest: byId("guestName").value,
     phone: byId("guestPhone").value,
+    roomId: totals.room.id,
     room: totals.room.name,
     checkIn: byId("checkInDate").value,
     checkOut: byId("checkOutDate").value,
@@ -524,7 +751,13 @@ function buildBooking(totals) {
     checkOutTime: byId("checkOutTime").value,
     guests: totals.guests,
     roomCount: totals.roomCount,
-    total: totals.total
+    ratePlan: totals.rate.planLabel,
+    occupancy: totals.rate.occupancyLabel,
+    total: totals.total,
+    paymentOption,
+    paymentDue,
+    balanceDue: Math.max(0, totals.total - paymentDue),
+    status: "pending"
   };
 }
 
@@ -537,8 +770,36 @@ function renderPaymentSummary(message = "") {
     <div><span>Dates</span><strong>${booking.checkIn} to ${booking.checkOut}</strong></div>
     <div><span>Guests</span><strong>${booking.guests}</strong></div>
     <div><span>Total</span><strong>${formatMoney(booking.total)}</strong></div>
+    <div><span>Pay now</span><strong>${formatMoney(booking.paymentDue)}</strong></div>
+    <div><span>Pay at counter</span><strong>${formatMoney(booking.balanceDue)}</strong></div>
     ${message ? `<p class="payment-hint">${message}</p>` : ""}
   `;
+}
+
+async function saveBooking(paymentDetails = {}) {
+  const booking = {
+    ...state.currentBooking,
+    ...paymentDetails,
+    status: "confirmed",
+    createdAt: new Date().toISOString()
+  };
+
+  try {
+    const response = await fetch("/api/bookings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(booking)
+    });
+    if (response.ok) {
+      const payload = await response.json();
+      state.currentBooking = payload.booking || booking;
+    }
+  } catch {
+    // The booking still completes visually in static preview; the Node server stores it when deployed.
+  }
+
+  await loadAvailability();
+  return state.currentBooking;
 }
 
 function openDemoPayment(message) {
@@ -562,7 +823,12 @@ async function verifyPayment(response) {
     throw new Error(result.error || "Payment verification failed.");
   }
 
-  byId("bookingMessage").textContent = `Booking confirmed. ${state.currentBooking.id} for ${state.currentBooking.guest} is paid through Razorpay. Payment ID: ${result.paymentId}.`;
+  await saveBooking({
+    paymentId: result.paymentId,
+    paymentStatus: state.currentBooking.balanceDue > 0 ? "partial-paid" : "paid",
+    paidAmount: state.currentBooking.paymentDue
+  });
+  byId("bookingMessage").textContent = `Booking confirmed. ${state.currentBooking.id} for ${state.currentBooking.guest}. Paid ${formatMoney(state.currentBooking.paymentDue)} through Razorpay. Balance: ${formatMoney(state.currentBooking.balanceDue)}.`;
 }
 
 async function startRazorpayPayment() {
@@ -580,7 +846,8 @@ async function startRazorpayPayment() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        amount: state.currentBooking.total,
+        amount: state.currentBooking.paymentDue,
+        paymentAmount: state.currentBooking.paymentDue,
         bookingId: state.currentBooking.id
       })
     });
@@ -611,7 +878,9 @@ async function startRazorpayPayment() {
       notes: {
         bookingId: state.currentBooking.id,
         checkIn: state.currentBooking.checkIn,
-        checkOut: state.currentBooking.checkOut
+        checkOut: state.currentBooking.checkOut,
+        paymentOption: state.currentBooking.paymentOption,
+        balanceDue: state.currentBooking.balanceDue
       },
       theme: {
         color: "#0f6f3f"
@@ -658,6 +927,14 @@ async function openPayment(event) {
     return;
   }
 
+  if (totals.roomCount > getAvailableRoomCount(totals.room.id, checkIn, checkOut)) {
+    byId("bookingMessage").textContent = "Selected room count is no longer available for these dates. Please choose another room or date.";
+    await loadAvailability();
+    renderAvailability();
+    showPage("availability");
+    return;
+  }
+
   state.currentBooking = buildBooking(totals);
   await startRazorpayPayment();
 }
@@ -665,7 +942,13 @@ async function openPayment(event) {
 function confirmPayment(event) {
   event.preventDefault();
   byId("paymentModal").close();
-  byId("bookingMessage").textContent = `Demo booking confirmed. Add Razorpay keys to collect real payment for ${state.currentBooking.id}.`;
+  saveBooking({
+    paymentId: `pay_demo_${Date.now()}`,
+    paymentStatus: state.currentBooking.balanceDue > 0 ? "partial-paid-demo" : "paid-demo",
+    paidAmount: state.currentBooking.paymentDue
+  }).then(() => {
+    byId("bookingMessage").textContent = `Demo booking confirmed. ${state.currentBooking.id} is saved for admin view. Paid now: ${formatMoney(state.currentBooking.paymentDue)}. Balance at counter: ${formatMoney(state.currentBooking.balanceDue)}.`;
+  });
 }
 
 function initAnimations() {
@@ -704,6 +987,10 @@ function bindEvents() {
     byId(id).addEventListener("input", calculateTotal);
   });
 
+  document.querySelectorAll("input[name='paymentOption']").forEach((input) => {
+    input.addEventListener("change", calculateTotal);
+  });
+
   ["quickCheckIn", "quickCheckOut", "checkInDate", "checkOutDate"].forEach((id) => {
     const input = byId(id);
     input.addEventListener("change", () => {
@@ -727,6 +1014,16 @@ function bindEvents() {
   byId("quickFindButton").addEventListener("click", syncQuickBooking);
   byId("bookingForm").addEventListener("submit", openPayment);
   byId("paymentForm").addEventListener("submit", confirmPayment);
+  byId("banquetEnquiryForm")?.addEventListener("submit", submitBanquetEnquiry);
+
+  document.querySelectorAll("[data-amenity-tab]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const key = button.dataset.amenityTab;
+      document.querySelectorAll("[data-amenity-tab]").forEach((tab) => tab.classList.toggle("active", tab === button));
+      document.querySelectorAll("[data-amenity-panel]").forEach((panel) => panel.classList.toggle("active", panel.dataset.amenityPanel === key));
+      window.lucide?.createIcons();
+    });
+  });
 }
 
 function initPreloader() {
@@ -738,14 +1035,17 @@ function initPreloader() {
 
 document.addEventListener("DOMContentLoaded", async () => {
   setDefaultDates();
+  await loadSiteContent();
   renderRooms();
   renderAmenities();
   await loadPaymentConfig();
+  await loadAvailability();
   initPageTabs();
   bindDatePicker();
   bindEvents();
   calculateTotal();
   initAnimations();
+  animateCounters();
   initPreloader();
   window.lucide?.createIcons();
 });

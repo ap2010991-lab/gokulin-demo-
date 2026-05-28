@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Admin Panel | Hotel Gokul Inn & Banquet</title>
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+    <link rel="stylesheet" href="styles.css?v=20260528-private-admin1" />
+    <link rel="stylesheet" href="admin.css?v=20260528-private-admin1" />
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+    <script src="admin.js?v=20260528-private-admin1" defer></script>
+  </head>
+  <body class="admin-body">
+    <main class="admin-shell">
+      <section class="admin-login" id="adminLogin">
+        <img src="assets/gokul-inn-logo-transparent.png" alt="Gokul Inn logo" />
+        <h1>Hotel Gokul Inn Admin</h1>
+        <p>Use the admin PIN to manage counter bookings, room stock, banquet enquiries, and website content privately.</p>
+        <form id="adminLoginForm">
+          <label>
+            <span>Admin PIN</span>
+            <input type="password" id="adminPin" placeholder="Enter PIN" required />
+          </label>
+          <button class="primary-button" type="submit"><i data-lucide="shield-check"></i><span>Open dashboard</span></button>
+        </form>
+      </section>
+
+      <section class="admin-dashboard" id="adminDashboard" hidden>
+        <header class="admin-topbar">
+          <div>
+            <p class="eyebrow">Private counter dashboard</p>
+            <h1>Hotel Admin Panel</h1>
+            <p>This dashboard is separate from the public website. Use it for bookings, availability, page content, room details and banquet requests.</p>
+          </div>
+          <div class="admin-actions">
+            <a class="ghost-light-button" href="index.html#availability"><i data-lucide="external-link"></i><span>Website</span></a>
+            <button class="primary-button" id="refreshAdmin" type="button"><i data-lucide="refresh-cw"></i><span>Refresh</span></button>
+          </div>
+        </header>
+
+        <div class="admin-stats" id="adminStats"></div>
+
+        <section class="admin-card">
+          <div class="admin-card-head">
+            <div>
+              <p class="eyebrow">Website content manager</p>
+              <h2>Edit page text and room cards</h2>
+              <p>Changes saved here update the public website after refresh. Use full image paths such as assets/gallery/room-bright.jpg or a hosted image URL.</p>
+            </div>
+          </div>
+          <form class="content-form" id="contentForm">
+            <div class="form-grid">
+              <label class="wide"><span>Hero title</span><input id="editHeroTitle" type="text" /></label>
+              <label class="wide"><span>Hero description</span><textarea id="editHeroCopy" rows="3"></textarea></label>
+              <label><span>Restaurant title</span><input id="editRestaurantTitle" type="text" /></label>
+              <label><span>Banquet title</span><input id="editBanquetTitle" type="text" /></label>
+              <label class="wide"><span>Restaurant description</span><textarea id="editRestaurantCopy" rows="3"></textarea></label>
+              <label class="wide"><span>Banquet description</span><textarea id="editBanquetCopy" rows="3"></textarea></label>
+            </div>
+            <div class="admin-card-head room-editor-head">
+              <div>
+                <p class="eyebrow">Room editor</p>
+                <h2>Edit, hide or restore room categories</h2>
+              </div>
+              <button class="primary-button" type="submit"><i data-lucide="save"></i><span>Save website content</span></button>
+            </div>
+            <div class="room-editor-grid" id="roomEditorGrid"></div>
+            <p class="form-note" id="contentMessage" role="status"></p>
+          </form>
+        </section>
+
+        <section class="admin-card">
+          <div class="admin-card-head">
+            <div>
+              <p class="eyebrow">Availability manager</p>
+              <h2>Add, remove or mark rooms fully booked</h2>
+            </div>
+          </div>
+          <div class="inventory-grid" id="inventoryGrid"></div>
+        </section>
+
+        <section class="admin-card">
+          <div class="admin-card-head">
+            <div>
+              <p class="eyebrow">Confirmed booking list</p>
+              <h2>Paid and partial-payment bookings</h2>
+            </div>
+            <input class="admin-search" id="bookingSearch" type="search" placeholder="Search booking, guest, room..." />
+          </div>
+          <div class="booking-table-wrap">
+            <table class="booking-table">
+              <thead>
+                <tr>
+                  <th>Booking</th>
+                  <th>Guest</th>
+                  <th>Room</th>
+                  <th>Dates</th>
+                  <th>Payment</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="bookingRows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="admin-card">
+          <div class="admin-card-head">
+            <div>
+              <p class="eyebrow">Banquet enquiries</p>
+              <h2>Event and banquet booking requests</h2>
+            </div>
+          </div>
+          <div class="booking-table-wrap">
+            <table class="booking-table">
+              <thead>
+                <tr>
+                  <th>Request</th>
+                  <th>Guest</th>
+                  <th>Event</th>
+                  <th>Package</th>
+                  <th>Message</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="banquetRows"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>
