@@ -64,7 +64,7 @@ const defaultContent = {
 
 const currency = (value) => `INR ${Math.round(Number(value || 0)).toLocaleString("en-IN")}`;
 const byId = (id) => document.getElementById(id);
-let adminPin = localStorage.getItem("gokulAdminPin") || "";
+let adminPin = "";
 let adminState = { bookings: [], inventory: {}, banquetBookings: [], content: structuredClone(defaultContent) };
 let activeAdminPage = "overview";
 
@@ -139,7 +139,9 @@ function showAdminPage(page = "overview") {
   document.querySelectorAll("[data-admin-page-target]").forEach((button) => {
     button.classList.toggle("active", button.dataset.adminPageTarget === nextPage);
   });
-  window.location.hash = nextPage;
+  if (window.location.hash !== `#${nextPage}`) {
+    history.replaceState(null, "", `#${nextPage}`);
+  }
   window.lucide?.createIcons();
 }
 
@@ -362,11 +364,16 @@ async function loadAdmin() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  localStorage.removeItem("gokulAdminPin");
   byId("adminLoginForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     adminPin = byId("adminPin").value;
-    localStorage.setItem("gokulAdminPin", adminPin);
-    await loadAdmin().catch((error) => alert(error.message));
+    byId("forgotPinMessage").textContent = "";
+    await loadAdmin().catch((error) => {
+      adminPin = "";
+      byId("adminPin").value = "";
+      byId("forgotPinMessage").textContent = error.message;
+    });
   });
 
   byId("refreshAdmin").addEventListener("click", () => loadAdmin().catch((error) => alert(error.message)));
@@ -382,10 +389,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!trigger) return;
     showAdminPage(trigger.dataset.adminPageTarget);
   });
-  if (adminPin) {
-    byId("adminPin").value = adminPin;
-    loadAdmin().catch(() => {});
-  }
   const requestedPage = window.location.hash.replace("#", "");
   if (requestedPage) showAdminPage(requestedPage);
   window.lucide?.createIcons();

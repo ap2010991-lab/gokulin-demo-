@@ -16,7 +16,7 @@ const defaults = {
 };
 
 export function requireAdmin(request, response) {
-  const adminPin = process.env.ADMIN_PIN || "2468";
+  const adminPin = process.env.ADMIN_PIN || "3456";
   const pin = request.headers["x-admin-pin"] || request.query?.pin;
   if (String(pin || "") !== adminPin) {
     response.status(401).json({ error: "Invalid admin PIN." });

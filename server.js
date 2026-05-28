@@ -21,7 +21,7 @@ const bookingsPath = path.join(__dirname, "data", "bookings.json");
 const inventoryPath = path.join(__dirname, "data", "inventory.json");
 const banquetBookingsPath = path.join(__dirname, "data", "banquet-bookings.json");
 const contentPath = path.join(__dirname, "data", "content.json");
-const adminPin = process.env.ADMIN_PIN || "2468";
+const adminPin = process.env.ADMIN_PIN || "3456";
 
 async function readJson(filePath, fallback) {
   try {
