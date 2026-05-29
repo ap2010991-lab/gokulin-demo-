@@ -99,8 +99,12 @@
             </div>
           </label>
           <label>
-            <span>Guests</span>
-            <input type="number" id="quickGuests" min="1" max="8" value="2" required />
+            <span>Adults</span>
+            <input type="number" id="quickAdults" min="1" max="99" value="2" required />
+          </label>
+          <label>
+            <span>Children</span>
+            <input type="number" id="quickChildren" min="0" max="99" value="0" />
           </label>
           <a class="quick-submit nav-tab" id="quickFindButton" href="#availability" data-page-target="availability" onclick="window.handleQuickBookingSubmit?.(event)"><i data-lucide="search"></i><span>Find stays</span></a>
         </form>
@@ -226,6 +230,13 @@
           <p class="search-summary" id="searchSummary">Select dates and guests to see matching rooms.</p>
         </div>
         <div class="availability-grid" id="availabilityGrid"></div>
+        <div class="availability-next" id="availabilityNext">
+          <div>
+            <span>Selected stay</span>
+            <strong id="availabilitySelectedSummary">Select one or more rooms to continue.</strong>
+          </div>
+          <button class="primary-button" type="button" id="continueToBooking"><i data-lucide="arrow-right"></i><span>Next</span></button>
+        </div>
       </section>
 
       <section class="section seo-section home-support active" data-page-support="home" data-animate>
@@ -508,17 +519,25 @@
               </label>
               <label>
                 <span>Check-in time</span>
-                <input type="time" id="checkInTime" value="12:00" required />
+                <input type="time" id="checkInTime" value="11:00" required />
               </label>
               <label>
                 <span>Check-out time</span>
-                <input type="time" id="checkOutTime" value="11:00" required />
+                <input type="time" id="checkOutTime" value="10:00" required />
               </label>
               <label>
+                <span>Adults</span>
+                <input type="number" id="adultCount" min="1" max="99" value="2" required />
+              </label>
+              <label>
+                <span>Children</span>
+                <input type="number" id="childCount" min="0" max="99" value="0" />
+              </label>
+              <label class="booking-hidden-field">
                 <span>Guests</span>
-                <input type="number" id="guestCount" min="1" max="8" value="2" required />
+                <input type="number" id="guestCount" min="1" max="99" value="2" required />
               </label>
-              <label>
+              <label class="booking-hidden-field">
                 <span>Rooms</span>
                 <input type="number" id="roomCount" min="1" max="4" value="1" required />
               </label>
@@ -531,7 +550,7 @@
                 <textarea id="specialRequest" rows="3" placeholder="Early arrival, meal preference, extra bedding..."></textarea>
               </label>
             </div>
-            <div class="toggle-row">
+            <div class="toggle-row booking-hidden-field">
               <label><input type="checkbox" id="mealPlan" checked /> Include breakfast rate</label>
               <label><input type="checkbox" id="pickup" /> Request local pickup help</label>
             </div>

@@ -233,10 +233,10 @@ svg {
 
 .hero {
   position: relative;
-  min-height: 92vh;
+  min-height: 82vh;
   display: grid;
   align-items: end;
-  padding: 148px max(22px, calc((100vw - 1160px) / 2)) 36px;
+  padding: 128px max(22px, calc((100vw - 1160px) / 2)) 120px;
   overflow: hidden;
 }
 
@@ -278,7 +278,7 @@ svg {
   z-index: 1;
   width: min(760px, 100%);
   color: #fff;
-  padding-bottom: 116px;
+  padding-bottom: 76px;
 }
 
 .eyebrow {
@@ -300,7 +300,7 @@ h3 {
 
 h1 {
   max-width: 720px;
-  font-size: clamp(4rem, 11vw, 9rem);
+  font-size: clamp(3rem, 7.5vw, 6.6rem);
 }
 
 h2 {
@@ -350,10 +350,10 @@ h3 {
   position: absolute;
   z-index: 3;
   right: max(22px, calc((100vw - 1160px) / 2));
-  bottom: 34px;
+  bottom: 52px;
   left: max(22px, calc((100vw - 1160px) / 2));
   display: grid;
-  grid-template-columns: repeat(3, 1fr) 168px;
+  grid-template-columns: repeat(4, 1fr) 168px;
   gap: 10px;
   padding: 12px;
   border-radius: 8px;
@@ -806,6 +806,38 @@ textarea:focus {
   gap: 14px;
 }
 
+.availability-next {
+  position: sticky;
+  bottom: 18px;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 22px;
+  padding: 16px;
+  border: 1px solid rgba(15, 111, 63, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 250, 240, 0.96);
+  box-shadow: 0 18px 42px rgba(24, 35, 29, 0.16);
+  backdrop-filter: blur(18px);
+}
+
+.availability-next span,
+.room-booking-options label > span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.availability-next strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--emerald-dark);
+}
+
 .room-card {
   position: relative;
   overflow: hidden;
@@ -825,6 +857,10 @@ textarea:focus {
 .room-card:hover {
   box-shadow: 0 26px 70px rgba(24, 35, 29, 0.18);
   transform: translateY(-8px);
+}
+
+.room-card.selected {
+  outline: 3px solid rgba(15, 111, 63, 0.22);
 }
 
 .room-card img {
@@ -947,6 +983,40 @@ textarea:focus {
   border: 1px solid rgba(24, 35, 29, 0.08);
   border-radius: 8px;
   background: rgba(15, 111, 63, 0.05);
+}
+
+.room-booking-options {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px dashed rgba(15, 111, 63, 0.22);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.room-booking-options input[type="number"] {
+  height: 42px;
+  margin-top: 6px;
+}
+
+.room-booking-options .option-check {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #3f4b44;
+  font-weight: 850;
+}
+
+.room-booking-options .option-check span {
+  color: #3f4b44;
+  font-size: 0.86rem;
+  text-transform: none;
+}
+
+.room-booking-options input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--emerald);
 }
 
 .availability-detail div {
@@ -2096,11 +2166,11 @@ textarea:focus {
 
   .hero {
     min-height: auto;
-    padding-top: 188px;
+    padding-top: 170px;
   }
 
   .hero-content {
-    padding-bottom: 250px;
+    padding-bottom: 330px;
   }
 
   .availability-section {
@@ -2146,6 +2216,12 @@ textarea:focus {
   .reviews-layout,
   .booking-section {
     grid-template-columns: 1fr;
+  }
+
+  .availability-next {
+    position: static;
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .gallery-grid {
@@ -2229,11 +2305,11 @@ textarea:focus {
   }
 
   h1 {
-    font-size: 3.5rem;
+    font-size: 3rem;
   }
 
   .hero-content {
-    padding-bottom: 352px;
+    padding-bottom: 430px;
   }
 
   .quick-booking {

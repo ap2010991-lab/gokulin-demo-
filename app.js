@@ -95,6 +95,7 @@ const defaultInventory = {
 
 const state = {
   selectedRoom: "deluxe",
+  selectedRooms: {},
   roomChosen: false,
   currentBooking: null,
   paymentConfig: {
@@ -135,8 +136,15 @@ function rangesOverlap(startA, endA, startB, endB) {
 
 function getBookedRooms(roomId, checkIn, checkOut) {
   return state.availability.bookings
-    .filter((booking) => booking.roomId === roomId && booking.status !== "cancelled" && rangesOverlap(checkIn, checkOut, booking.checkIn, booking.checkOut))
-    .reduce((sum, booking) => sum + Number(booking.roomCount || 1), 0);
+    .filter((booking) => booking.status !== "cancelled" && rangesOverlap(checkIn, checkOut, booking.checkIn, booking.checkOut))
+    .reduce((sum, booking) => {
+      if (Array.isArray(booking.roomSelections)) {
+        return sum + booking.roomSelections
+          .filter((selection) => selection.roomId === roomId)
+          .reduce((total, selection) => total + Number(selection.count || 0), 0);
+      }
+      return booking.roomId === roomId ? sum + Number(booking.roomCount || 1) : sum;
+    }, 0);
 }
 
 function getAvailableRoomCount(roomId, checkIn = byId("checkInDate")?.value, checkOut = byId("checkOutDate")?.value) {
@@ -429,16 +437,21 @@ function renderRooms() {
 function buildRoomCard(room, options = {}) {
   const nights = options.nights || 1;
   const guests = Number(options.guests || 1);
+  const selected = state.selectedRooms[room.id] || {};
+  const selectedCount = Number(selected.count || 0);
+  const includeBreakfast = selected.includeBreakfast !== false;
+  const extraBed = room.id !== "deluxe" && selected.extraBed === true;
   const roomsNeeded = Math.max(1, Math.ceil((options.guests || 1) / room.capacity));
-  const roomCount = options.showStayTotal ? roomsNeeded : 1;
-  const rate = getRoomRate(room, guests, roomCount, true);
-  const stayTotal = rate.amount * nights * roomCount;
+  const roomCount = options.showStayTotal ? Math.max(selectedCount || roomsNeeded, 1) : 1;
+  const rate = getRoomRate(room, guests, roomCount, includeBreakfast);
+  const extraBedTotal = extraBed ? extraBedRates.withBreakfast * nights * roomCount : 0;
+  const stayTotal = (rate.amount * nights * roomCount) + extraBedTotal;
   const available = options.checkIn && options.checkOut ? getAvailableRoomCount(room.id, options.checkIn, options.checkOut) : getAvailableRoomCount(room.id);
-  const canSelect = available >= roomCount;
-  const capacityText = roomCount > 1 ? `${roomCount} rooms suggested` : `Up to ${room.capacity} guests`;
+  const canSelect = available > 0;
+  const capacityText = selectedCount > 0 ? `${selectedCount} selected` : `Up to ${room.capacity} guests`;
 
   return `
-    <article class="room-card ${options.showStayTotal ? "availability-card compact-stay-card" : ""}" data-room="${room.id}">
+    <article class="room-card ${options.showStayTotal ? "availability-card compact-stay-card" : ""} ${selectedCount ? "selected" : ""}" data-room="${room.id}">
       <img src="${room.image}" alt="${room.name}" loading="lazy" />
       <div class="room-body">
         <div class="room-title-row">
@@ -457,15 +470,32 @@ function buildRoomCard(room, options = {}) {
             <div><span>Plan</span><strong>${rate.planLabel}</strong></div>
             <div><span>Occupancy rate</span><strong>${rate.occupancyLabel}</strong></div>
             <div><span>Nightly room price</span><strong>${formatMoney(rate.amount)}</strong></div>
+            ${extraBed ? `<div><span>Extra bed</span><strong>${formatMoney(extraBedRates.withBreakfast)} / night</strong></div>` : ""}
             <div><span>${nights} night${nights > 1 ? "s" : ""} total</span><strong>${formatMoney(stayTotal)}</strong></div>
+          </div>
+          <div class="room-booking-options">
+            <label>
+              <span>Rooms</span>
+              <input type="number" min="0" max="${available}" value="${selectedCount}" data-room-qty="${room.id}" ${canSelect ? "" : "disabled"} />
+            </label>
+            <label class="option-check">
+              <input type="checkbox" data-room-breakfast="${room.id}" ${includeBreakfast ? "checked" : ""} />
+              <span>Breakfast rate</span>
+            </label>
+            ${room.id !== "deluxe" ? `
+              <label class="option-check">
+                <input type="checkbox" data-room-extra-bed="${room.id}" ${extraBed ? "checked" : ""} />
+                <span>Extra bed + 1 person, INR 599 with breakfast</span>
+              </label>
+            ` : ""}
           </div>
         ` : ""}
         <div class="room-price">
           <div>
             <strong>${options.showStayTotal ? formatMoney(stayTotal) : formatMoney(rate.amount)}</strong>
-            <span>${options.showStayTotal ? "with breakfast estimate" : "/ night with breakfast"}</span>
+            <span>${options.showStayTotal ? "selected estimate" : "/ night with breakfast"}</span>
           </div>
-          <button class="select-room" type="button" data-select-room="${room.id}" data-room-count="${roomCount}" ${canSelect ? "" : "disabled"}>${canSelect ? "Select" : "Sold out"}</button>
+          <button class="select-room" type="button" data-select-room="${room.id}" data-room-count="${Math.max(1, selectedCount || roomsNeeded)}" ${canSelect ? "" : "disabled"}>${selectedCount ? "Selected" : canSelect ? "Add" : "Sold out"}</button>
         </div>
       </div>
     </article>
@@ -475,11 +505,13 @@ function buildRoomCard(room, options = {}) {
 function renderAvailability() {
   const checkIn = byId("quickCheckIn").value || byId("checkInDate").value;
   const checkOut = byId("quickCheckOut").value || byId("checkOutDate").value;
-  const guests = Number(byId("quickGuests").value || byId("guestCount").value || 1);
+  const adults = Number(byId("quickAdults").value || byId("adultCount").value || 1);
+  const children = Number(byId("quickChildren").value || byId("childCount").value || 0);
+  const guests = adults + children;
   const nights = nightsBetween(checkIn, checkOut);
   const grid = byId("availabilityGrid");
 
-  byId("searchSummary").textContent = `${formatDateLabel(checkIn)} to ${formatDateLabel(checkOut)} | ${nights} night${nights > 1 ? "s" : ""} | ${guests} guest${guests > 1 ? "s" : ""}`;
+  byId("searchSummary").textContent = `${formatDateLabel(checkIn)} to ${formatDateLabel(checkOut)} | ${nights} night${nights > 1 ? "s" : ""} | ${adults} adult${adults > 1 ? "s" : ""}${children ? `, ${children} child${children > 1 ? "ren" : ""}` : ""}`;
   grid.innerHTML = activeRooms().map((room) => buildRoomCard(room, {
     nights,
     guests,
@@ -489,6 +521,8 @@ function renderAvailability() {
   })).join("");
 
   bindRoomSelection(grid);
+  bindRoomOptionControls(grid);
+  renderAvailabilitySelectionSummary();
   window.lucide?.createIcons();
   initRoomCardAnimations(grid);
 }
@@ -501,11 +535,55 @@ function bindRoomSelection(scope = document) {
   });
 }
 
+function bindRoomOptionControls(scope = document) {
+  scope.querySelectorAll("[data-room-qty]").forEach((input) => {
+    input.addEventListener("change", () => {
+      const roomId = input.dataset.roomQty;
+      const count = Math.max(0, Math.min(Number(input.max || 0), Number(input.value || 0)));
+      input.value = count;
+      updateSelectedRoom(roomId, { count });
+    });
+  });
+
+  scope.querySelectorAll("[data-room-breakfast]").forEach((input) => {
+    input.addEventListener("change", () => {
+      const current = state.selectedRooms[input.dataset.roomBreakfast]?.count || 1;
+      updateSelectedRoom(input.dataset.roomBreakfast, { includeBreakfast: input.checked, count: current });
+    });
+  });
+
+  scope.querySelectorAll("[data-room-extra-bed]").forEach((input) => {
+    input.addEventListener("change", () => {
+      const current = state.selectedRooms[input.dataset.roomExtraBed]?.count || 1;
+      updateSelectedRoom(input.dataset.roomExtraBed, { extraBed: input.checked, count: current });
+    });
+  });
+}
+
+function updateSelectedRoom(roomId, updates = {}) {
+  const previous = state.selectedRooms[roomId] || { roomId, count: 0, includeBreakfast: true, extraBed: false };
+  const next = { ...previous, ...updates };
+  if (next.count <= 0) {
+    delete state.selectedRooms[roomId];
+  } else {
+    state.selectedRooms[roomId] = next;
+  }
+  state.roomChosen = getSelectedRoomItems().length > 0;
+  renderAvailability();
+  calculateTotal();
+}
+
 function selectRoom(roomId, roomCount = 1) {
   state.selectedRoom = roomId;
+  updateSelectedRoom(roomId, { count: Math.max(1, roomCount) });
+}
+
+function continueToBooking() {
+  if (!getSelectedRoomItems().length) {
+    byId("availabilitySelectedSummary").textContent = "Please select at least one room to continue.";
+    return;
+  }
   state.roomChosen = true;
-  byId("roomType").value = roomId;
-  byId("roomCount").value = Math.min(4, Math.max(1, roomCount));
   syncDateConstraints();
   calculateTotal();
   showPage("booking");
@@ -525,35 +603,79 @@ function getSelectedRoom() {
   return activeRooms().find((room) => room.id === byId("roomType").value) || activeRooms()[0] || profile.rooms[0];
 }
 
+function getSelectedRoomItems() {
+  return Object.values(state.selectedRooms)
+    .filter((selection) => Number(selection.count || 0) > 0)
+    .map((selection) => {
+      const room = activeRooms().find((item) => item.id === selection.roomId);
+      return room ? { ...selection, room } : null;
+    })
+    .filter(Boolean);
+}
+
+function getGuestCounts() {
+  const adults = Math.max(1, Number(byId("adultCount")?.value || byId("quickAdults")?.value || 1));
+  const children = Math.max(0, Number(byId("childCount")?.value || byId("quickChildren")?.value || 0));
+  return { adults, children, guests: adults + children };
+}
+
+function redirectLargeGroupToWhatsApp(adults) {
+  if (adults <= 10) return false;
+  const text = encodeURIComponent(`Hello Hotel Gokul Inn, I want to book rooms for ${adults} adults. Please help me with group booking availability.`);
+  window.open(`https://wa.me/917600661149?text=${text}`, "_blank", "noopener");
+  return true;
+}
+
 function calculateTotal() {
-  const room = getSelectedRoom();
   const nights = nightsBetween(byId("checkInDate").value, byId("checkOutDate").value);
-  const roomCount = Number(byId("roomCount").value || 1);
-  const guests = Number(byId("guestCount").value || 1);
-  const capacity = room.capacity * roomCount;
-  const includeBreakfast = byId("mealPlan").checked;
-  const rate = getRoomRate(room, guests, roomCount, includeBreakfast);
-  const base = rate.amount * nights * roomCount;
+  const { adults, children, guests } = getGuestCounts();
+  byId("guestCount").value = guests;
+  const items = getSelectedRoomItems();
+  const fallbackRoom = getSelectedRoom();
+  const selectedItems = items.length ? items : [{ room: fallbackRoom, roomId: fallbackRoom.id, count: Number(byId("roomCount").value || 1), includeBreakfast: byId("mealPlan").checked, extraBed: false }];
+  const lines = selectedItems.map((item) => {
+    const rate = getRoomRate(item.room, item.room.capacity, item.count, item.includeBreakfast !== false);
+    const extraBedCount = item.room.id !== "deluxe" && item.extraBed ? item.count : 0;
+    const roomTotal = rate.amount * nights * item.count;
+    const extraBedTotal = extraBedCount * extraBedRates.withBreakfast * nights;
+    return {
+      ...item,
+      rate,
+      roomTotal,
+      extraBedCount,
+      extraBedTotal,
+      total: roomTotal + extraBedTotal,
+      capacity: item.room.capacity * item.count + extraBedCount
+    };
+  });
+  const room = lines[0].room;
+  const roomCount = lines.reduce((sum, line) => sum + Number(line.count || 0), 0);
+  const capacity = lines.reduce((sum, line) => sum + line.capacity, 0);
+  const base = lines.reduce((sum, line) => sum + line.total, 0);
   const taxes = 0;
   const meal = 0;
   const pickup = byId("pickup").checked ? 900 : 0;
   const total = base + taxes + meal + pickup;
 
   byId("totalAmount").textContent = formatMoney(total);
-  byId("bookingMessage").textContent = guests > capacity ? `${room.name} supports ${capacity} guest(s) for ${roomCount} room(s). Add more rooms to continue.` : "";
-  renderSelectedStaySummary({ room, nights, roomCount, guests, total, rate });
+  byId("roomCount").value = roomCount || 1;
+  byId("roomType").value = room.id;
+  byId("bookingMessage").textContent = guests > capacity ? `Selected rooms support ${capacity} guest(s). Add more rooms or extra bed to continue.` : "";
+  renderSelectedStaySummary({ lines, nights, roomCount, guests, adults, children, total });
 
-  return { room, nights, roomCount, guests, base, taxes, meal, pickup, total, capacity, rate, includeBreakfast };
+  return { room, lines, nights, roomCount, guests, adults, children, base, taxes, meal, pickup, total, capacity, rate: lines[0].rate, includeBreakfast: lines.every((line) => line.includeBreakfast !== false) };
 }
 
-function renderSelectedStaySummary({ room, nights, roomCount, guests, total, rate }) {
+function renderSelectedStaySummary({ lines = [], nights, roomCount, guests, adults, children, total }) {
   const summary = byId("selectedStaySummary");
   if (!summary) return;
+  const roomText = lines.map((line) => `${line.count} ${line.room.name}${line.extraBedCount ? ` + ${line.extraBedCount} extra bed` : ""}`).join(", ");
+  const planText = lines.map((line) => `${line.room.name}: ${line.rate.planLabel}`).join(" | ");
 
   summary.innerHTML = `
     <div>
-      <span>Selected room</span>
-      <strong>${room.name}</strong>
+      <span>Selected rooms</span>
+      <strong>${roomText || "Select room"}</strong>
     </div>
     <div>
       <span>Stay dates</span>
@@ -561,11 +683,11 @@ function renderSelectedStaySummary({ room, nights, roomCount, guests, total, rat
     </div>
     <div>
       <span>Guests & rooms</span>
-      <strong>${guests} guest${guests > 1 ? "s" : ""} | ${roomCount} room${roomCount > 1 ? "s" : ""}</strong>
+      <strong>${adults} adult${adults > 1 ? "s" : ""}${children ? `, ${children} child${children > 1 ? "ren" : ""}` : ""} | ${roomCount} room${roomCount > 1 ? "s" : ""}</strong>
     </div>
     <div>
-      <span>${rate?.planLabel || "Rate plan"}</span>
-      <strong>${rate?.occupancyLabel || "Selected rate"}</strong>
+      <span>Rate plans</span>
+      <strong>${planText || "Selected rate"}</strong>
     </div>
     <div>
       <span>${nights} night${nights > 1 ? "s" : ""} estimate</span>
@@ -574,12 +696,25 @@ function renderSelectedStaySummary({ room, nights, roomCount, guests, total, rat
   `;
 }
 
+function renderAvailabilitySelectionSummary() {
+  const items = getSelectedRoomItems();
+  const summary = byId("availabilitySelectedSummary");
+  const next = byId("continueToBooking");
+  if (!summary || !next) return;
+  const count = items.reduce((sum, item) => sum + Number(item.count || 0), 0);
+  summary.textContent = count ? `${count} room${count > 1 ? "s" : ""} selected: ${items.map((item) => `${item.count} ${item.room.name}`).join(", ")}` : "Select one or more rooms to continue.";
+  next.disabled = count === 0;
+}
+
 function syncQuickBooking(event) {
   event?.preventDefault?.();
   syncDateConstraints();
   byId("checkInDate").value = byId("quickCheckIn").value;
   byId("checkOutDate").value = byId("quickCheckOut").value;
-  byId("guestCount").value = byId("quickGuests").value;
+  if (redirectLargeGroupToWhatsApp(Number(byId("quickAdults").value || 1))) return false;
+  byId("adultCount").value = byId("quickAdults").value;
+  byId("childCount").value = byId("quickChildren").value || 0;
+  byId("guestCount").value = Number(byId("adultCount").value || 1) + Number(byId("childCount").value || 0);
   syncDateConstraints();
   calculateTotal();
   renderAvailability();
@@ -707,6 +842,7 @@ function animateCounters() {
 async function submitBanquetEnquiry(event) {
   event.preventDefault();
   const form = event.currentTarget;
+  byId("banquetFormMessage").textContent = "Sending your banquet request...";
   const enquiry = {
     id: `BANQ-${Date.now().toString().slice(-6)}`,
     name: byId("banquetName").value,
@@ -727,7 +863,7 @@ async function submitBanquetEnquiry(event) {
       body: JSON.stringify(enquiry)
     });
     if (!response.ok) throw new Error("Banquet enquiry could not be saved.");
-    byId("banquetFormMessage").textContent = "Banquet enquiry saved. Our team will contact you shortly.";
+    byId("banquetFormMessage").textContent = "Request sent successfully. Our banquet team will contact you shortly.";
     form.reset();
   } catch {
     const text = encodeURIComponent(`Hello Hotel Gokul Inn, I want to book the banquet. Name: ${enquiry.name}, Phone: ${enquiry.phone}, Date: ${enquiry.eventDate}, Guests: ${enquiry.guests}, Package: ${enquiry.package}`);
@@ -738,21 +874,36 @@ async function submitBanquetEnquiry(event) {
 function buildBooking(totals) {
   const paymentOption = document.querySelector("input[name='paymentOption']:checked")?.value || "full";
   const paymentDue = paymentOption === "partial-300" ? 300 : paymentOption === "partial-500" ? 500 : totals.total;
+  const roomSelections = totals.lines.map((line) => ({
+    roomId: line.room.id,
+    room: line.room.name,
+    count: line.count,
+    ratePlan: line.rate.planLabel,
+    occupancy: line.rate.occupancyLabel,
+    nightlyRate: line.rate.amount,
+    extraBedCount: line.extraBedCount,
+    extraBedRate: line.extraBedCount ? extraBedRates.withBreakfast : 0,
+    total: line.total
+  }));
+  const roomName = roomSelections.map((line) => `${line.count} ${line.room}${line.extraBedCount ? ` + ${line.extraBedCount} extra bed` : ""}`).join(", ");
 
   return {
     id: `GIN-${Date.now().toString().slice(-6)}`,
     guest: byId("guestName").value,
     phone: byId("guestPhone").value,
     roomId: totals.room.id,
-    room: totals.room.name,
+    room: roomName,
+    roomSelections,
     checkIn: byId("checkInDate").value,
     checkOut: byId("checkOutDate").value,
     checkInTime: byId("checkInTime").value,
     checkOutTime: byId("checkOutTime").value,
     guests: totals.guests,
+    adults: totals.adults,
+    children: totals.children,
     roomCount: totals.roomCount,
-    ratePlan: totals.rate.planLabel,
-    occupancy: totals.rate.occupancyLabel,
+    ratePlan: roomSelections.map((line) => `${line.room}: ${line.ratePlan}`).join(" | "),
+    occupancy: roomSelections.map((line) => `${line.room}: ${line.occupancy}`).join(" | "),
     total: totals.total,
     paymentOption,
     paymentDue,
@@ -927,8 +1078,9 @@ async function openPayment(event) {
     return;
   }
 
-  if (totals.roomCount > getAvailableRoomCount(totals.room.id, checkIn, checkOut)) {
-    byId("bookingMessage").textContent = "Selected room count is no longer available for these dates. Please choose another room or date.";
+  const unavailable = totals.lines.find((line) => line.count > getAvailableRoomCount(line.room.id, checkIn, checkOut));
+  if (unavailable) {
+    byId("bookingMessage").textContent = `${unavailable.room.name} is no longer available for the selected quantity. Please choose another room or date.`;
     await loadAvailability();
     renderAvailability();
     showPage("availability");
@@ -983,7 +1135,7 @@ function initRoomCardAnimations(scope = document) {
 }
 
 function bindEvents() {
-  ["checkInDate", "checkOutDate", "roomType", "guestCount", "roomCount", "mealPlan", "pickup"].forEach((id) => {
+  ["checkInDate", "checkOutDate", "roomType", "guestCount", "roomCount", "mealPlan", "pickup", "adultCount", "childCount"].forEach((id) => {
     byId(id).addEventListener("input", calculateTotal);
   });
 
@@ -999,19 +1151,25 @@ function bindEvents() {
     });
   });
 
-  ["quickGuests", "guestCount", "roomCount"].forEach((id) => {
+  ["quickAdults", "quickChildren", "adultCount", "childCount", "guestCount", "roomCount"].forEach((id) => {
     const input = byId(id);
-    input.addEventListener("change", () => {
+    input.addEventListener("input", () => {
       const min = Number(input.min || 1);
       const max = Number(input.max || 99);
       const value = Number(input.value || min);
       input.value = Math.min(max, Math.max(min, value));
+      if ((id === "quickAdults" || id === "adultCount") && redirectLargeGroupToWhatsApp(Number(input.value || 1))) {
+        input.value = 10;
+      }
+      byId("guestCount").value = Number(byId("adultCount").value || byId("quickAdults").value || 1) + Number(byId("childCount").value || byId("quickChildren").value || 0);
       calculateTotal();
+      renderAvailabilitySelectionSummary();
     });
   });
 
   byId("quickBooking").addEventListener("submit", syncQuickBooking);
   byId("quickFindButton").addEventListener("click", syncQuickBooking);
+  byId("continueToBooking").addEventListener("click", continueToBooking);
   byId("bookingForm").addEventListener("submit", openPayment);
   byId("paymentForm").addEventListener("submit", confirmPayment);
   byId("banquetEnquiryForm")?.addEventListener("submit", submitBanquetEnquiry);
