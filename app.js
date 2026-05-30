@@ -12,9 +12,12 @@ const profile = {
     "Air conditioning",
     "Tea / coffee maker",
     "24/7 room service",
-    "Banquet hall up to 150",
+    "Banquet hall up to 150+",
     "Daily housekeeping",
-    "Smart TV"
+    "Smart TV",
+    "Complimentary dental kit",
+    "Comb",
+    "Hair oil"
   ],
   rooms: [
     {
@@ -590,7 +593,7 @@ function continueToBooking() {
 }
 
 function renderAmenities() {
-  const icons = ["utensils", "parking-circle", "wifi", "snowflake", "chef-hat", "sparkles", "stethoscope", "briefcase", "cross", "tree-palm"];
+  const icons = ["utensils", "parking-circle", "wifi", "snowflake", "chef-hat", "sparkles", "stethoscope", "briefcase", "cross", "tree-palm", "badge-check", "scissors", "droplets"];
   byId("amenityGrid").innerHTML = profile.amenities.map((item, index) => `
     <article class="amenity">
       <i data-lucide="${icons[index] || "check-circle"}"></i>
@@ -731,6 +734,8 @@ function showPage(page) {
     targetPage = "availability";
   }
 
+  document.body.dataset.activePage = targetPage;
+
   document.querySelectorAll("[data-page]").forEach((section) => {
     section.classList.toggle("active", section.dataset.page === targetPage);
   });
@@ -815,7 +820,8 @@ function animateCounters() {
       const progress = Math.min(1, (now - start) / duration);
       const eased = 1 - Math.pow(1 - progress, 3);
       const value = target * eased;
-      item.textContent = isDecimal ? value.toFixed(1) : Math.round(value).toLocaleString("en-IN");
+      const suffix = item.dataset.suffix || "";
+      item.textContent = `${isDecimal ? value.toFixed(1) : Math.round(value).toLocaleString("en-IN")}${suffix}`;
       if (progress < 1) requestAnimationFrame(tick);
     };
 

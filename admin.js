@@ -54,11 +54,11 @@ const defaultRooms = [
 
 const defaultContent = {
   heroTitle: "Hotel Gokul Inn & Banquet",
-  heroCopy: "Where comfort meets luxury: a trusted hotel in Vapi near Vapi Railway Station with 53 thoughtful rooms, Madhuvan pure vegetarian restaurant, online booking, partial payment, and a versatile banquet hall for celebrations and corporate gatherings of up to 150 guests.",
+  heroCopy: "Where comfort meets luxury: a trusted hotel in Vapi near Vapi Railway Station with 53 thoughtful rooms, Madhuvan pure vegetarian restaurant, online booking, partial payment, and a versatile banquet hall for celebrations and corporate gatherings of up to 150+ guests.",
   restaurantTitle: "Madhuvan Restaurant",
   restaurantCopy: "Located at Hotel Gokul Inn opposite Vapi Railway Station, Madhuvan is a pure vegetarian, Jain-friendly multi-cuisine destination serving breakfast, brunch, lunch and dinner from 8:00 AM to 11:00 PM.",
   banquetTitle: "Elegant moments, thoughtfully hosted.",
-  banquetCopy: "Directly opposite Vapi Railway Station (East), our versatile hall welcomes corporate events, meetings, parties, marriage functions, anniversaries and special occasions with seating arrangements for up to 150 guests.",
+  banquetCopy: "Directly opposite Vapi Railway Station (East), our versatile hall welcomes corporate events, meetings, parties, marriage functions, anniversaries and special occasions with seating arrangements for up to 150+ guests.",
   rooms: defaultRooms
 };
 
@@ -67,6 +67,10 @@ const byId = (id) => document.getElementById(id);
 let adminPin = "";
 let adminState = { bookings: [], inventory: {}, banquetBookings: [], content: structuredClone(defaultContent) };
 let activeAdminPage = "overview";
+let adminPollTimer = null;
+let adminHasLoaded = false;
+let knownBookingIds = new Set();
+let knownBanquetIds = new Set();
 
 function escapeHtml(value = "") {
   return String(value)
@@ -112,6 +116,63 @@ async function adminFetch(url, options = {}) {
   }
 
   return response.json();
+}
+
+function bookingLabel(booking) {
+  const guest = booking.guestName || booking.guest || "New guest";
+  const room = booking.roomLabel || booking.roomName || booking.room || "room booking";
+  return `${guest} - ${room}`;
+}
+
+function banquetLabel(request) {
+  const guest = request.name || "New banquet enquiry";
+  const count = request.guests ? `${request.guests} guests` : "event request";
+  return `${guest} - ${count}`;
+}
+
+async function requestAdminNotifications() {
+  if (!("Notification" in window)) {
+    alert("This browser does not support desktop notifications.");
+    return false;
+  }
+  if (Notification.permission === "granted") return true;
+  const result = await Notification.requestPermission();
+  return result === "granted";
+}
+
+function notifyAdmin(title, body) {
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
+  new Notification(title, {
+    body,
+    icon: "assets/favicon.png",
+    badge: "assets/favicon.png"
+  });
+}
+
+function syncNotificationMemory(payload) {
+  const bookings = payload.bookings || [];
+  const banquetBookings = payload.banquetBookings || [];
+
+  if (adminHasLoaded) {
+    bookings
+      .filter((booking) => booking.id && !knownBookingIds.has(booking.id))
+      .forEach((booking) => notifyAdmin("New room booking", bookingLabel(booking)));
+
+    banquetBookings
+      .filter((request) => request.id && !knownBanquetIds.has(request.id))
+      .forEach((request) => notifyAdmin("New banquet request", banquetLabel(request)));
+  }
+
+  knownBookingIds = new Set(bookings.map((booking) => booking.id).filter(Boolean));
+  knownBanquetIds = new Set(banquetBookings.map((request) => request.id).filter(Boolean));
+  adminHasLoaded = true;
+}
+
+function startAdminPolling() {
+  window.clearInterval(adminPollTimer);
+  adminPollTimer = window.setInterval(() => {
+    loadAdmin({ silent: true }).catch(() => {});
+  }, 30000);
 }
 
 function renderStats() {
@@ -346,11 +407,12 @@ function renderBanquetBookings() {
   });
 }
 
-async function loadAdmin() {
+async function loadAdmin({ silent = false } = {}) {
   const [payload, content] = await Promise.all([
     adminFetch("/api/bookings"),
     adminFetch("/api/content")
   ]);
+  syncNotificationMemory(payload);
   adminState = { ...payload, content: mergeContent(content) };
   byId("adminLogin").hidden = true;
   byId("adminDashboard").hidden = false;
@@ -361,6 +423,7 @@ async function loadAdmin() {
   renderBookings();
   renderBanquetBookings();
   window.lucide?.createIcons();
+  if (!silent) startAdminPolling();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -369,7 +432,7 @@ document.addEventListener("DOMContentLoaded", () => {
     event.preventDefault();
     adminPin = byId("adminPin").value;
     byId("forgotPinMessage").textContent = "";
-    await loadAdmin().catch((error) => {
+    await loadAdmin().then(() => requestAdminNotifications()).catch((error) => {
       adminPin = "";
       byId("adminPin").value = "";
       byId("forgotPinMessage").textContent = error.message;
@@ -378,6 +441,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   byId("refreshAdmin").addEventListener("click", () => loadAdmin().catch((error) => alert(error.message)));
   byId("refreshAdminSecondary").addEventListener("click", () => loadAdmin().catch((error) => alert(error.message)));
+  byId("enableNotifications").addEventListener("click", () => requestAdminNotifications());
   byId("contentForm").addEventListener("submit", (event) => saveContent(event).catch((error) => alert(error.message)));
   byId("roomContentForm").addEventListener("submit", (event) => saveContent(event).catch((error) => alert(error.message)));
   byId("bookingSearch").addEventListener("input", renderBookings);

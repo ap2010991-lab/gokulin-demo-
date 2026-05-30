@@ -113,7 +113,7 @@
       <section class="stats-band home-support active" data-page-support="home" data-animate>
         <article><strong data-count="4.5">0</strong><span>Google rating</span></article>
         <article><strong data-count="53">0</strong><span>Thoughtfully designed rooms</span></article>
-        <article><strong data-count="150">0</strong><span>Banquet seating capacity</span></article>
+        <article><strong data-count="150" data-suffix="+">0</strong><span>Banquet seating capacity</span></article>
         <article><strong>Vapi</strong><span>Opp. railway station east</span></article>
       </section>
 
@@ -315,7 +315,7 @@
               <a class="ghost-button" href="assets/docs/gokul-inn-banquet-menu.pdf" target="_blank" rel="noopener"><i data-lucide="book-open"></i><span>View menu PDF</span></a>
             </div>
           </div>
-          <div class="banquet-capacity" data-animate><strong data-count="150">0</strong><span>Seating arrangement</span></div>
+          <div class="banquet-capacity" data-animate><strong data-count="150" data-suffix="+">0</strong><span>Seating arrangement</span></div>
         </div>
         <div class="section banquet-details">
           <div class="banquet-events" data-animate>
@@ -376,7 +376,7 @@
               <label><span>Name</span><input id="banquetName" type="text" placeholder="Your name" required /></label>
               <label><span>Mobile number</span><input id="banquetPhone" type="tel" placeholder="+91 98765 43210" required /></label>
               <label><span>Event date</span><input id="banquetDate" type="date" required /></label>
-              <label><span>Guests</span><input id="banquetGuests" type="number" min="20" max="150" value="80" required /></label>
+              <label><span>Guests</span><input id="banquetGuests" type="number" min="20" max="200" value="80" required /></label>
               <label><span>Event type</span><select id="banquetType"><option>Corporate event</option><option>Meeting</option><option>Marriage function</option><option>Anniversary</option><option>Birthday party</option><option>Other celebration</option></select></label>
               <label><span>Package</span><select id="banquetPackage"><option>Silver - INR 600 + GST</option><option>Gold - INR 650 + GST</option><option>Platinum - INR 700 + GST</option></select></label>
               <label class="wide"><span>Message</span><textarea id="banquetMessage" rows="3" placeholder="Lunch or dinner session, decoration, projector, special food requirements..."></textarea></label>
@@ -394,7 +394,7 @@
               <li>40% advance on confirmation; non-refundable on cancellation or postponement.</li>
               <li>100% payment is due before 7 days of the function.</li>
               <li>Charges apply to actual attendance or guaranteed count, whichever is higher.</li>
-              <li>Party limit is 4 hours; extra time is charged at INR 4,000 up to 11:00 PM.</li>
+              <li>Party limit is 4 hours; extra time is charged at INR 3,000 per hr up to 11:00 PM.</li>
               <li>Outside food, beverages and alcohol are not allowed on the premises.</li>
               <li>Decoration, stage, projector and speaker arrangements are available at extra charge.</li>
             </ul>
@@ -406,7 +406,7 @@
         <div class="section-heading" data-animate>
           <p class="eyebrow">Everything expected</p>
           <h2>Hotel amenities</h2>
-          <p class="search-summary">The hotel brochure identifies 53 rooms with complimentary buffet breakfast, high-speed Wi-Fi, tea and coffee maker, toiletries, air conditioning, Smart TV, housekeeping, 24/7 room service and front desk assistance.</p>
+          <p class="search-summary">The hotel brochure identifies 53 rooms with complimentary buffet breakfast, high-speed Wi-Fi, tea and coffee maker, toiletries, complimentary dental kit, comb, hair oil, air conditioning, Smart TV, housekeeping, 24/7 room service and front desk assistance.</p>
         </div>
         <div class="amenity-grid" id="amenityGrid"></div>
         <div class="amenity-experience" data-animate>
@@ -419,7 +419,7 @@
           <div class="amenity-panels">
             <article class="active" data-amenity-panel="comfort">
               <img src="assets/gallery/actual/room-tv-amenities-enhanced.jpg" alt="Room amenities with TV, tea and coffee maker" />
-              <div><h3>Room comfort that feels ready</h3><p>Smart TV, air conditioning, tea and coffee maker, bottled water, clean linen, toiletries and private bathroom support a smooth hotel stay in Vapi.</p></div>
+              <div><h3>Room comfort that feels ready</h3><p>Smart TV, air conditioning, tea and coffee maker, bottled water, clean linen, toiletries, dental kit, comb, hair oil and private bathroom support a smooth hotel stay in Vapi.</p></div>
             </article>
             <article data-amenity-panel="service">
               <img src="assets/gallery/actual/reception-lobby-sofa-enhanced.jpg" alt="Hotel Gokul Inn reception and lobby" />
@@ -446,7 +446,7 @@
           </article>
           <article>
             <h3>Safety and rooms</h3>
-            <p>CCTV, fire extinguishers, security alarms, security guard, flat-screen TV, toiletries, mineral water, and private bathrooms.</p>
+            <p>CCTV, fire extinguishers, security alarms, security guard, flat-screen TV, toiletries, complimentary dental kit, comb, hair oil, mineral water, and private bathrooms.</p>
           </article>
         </div>
       </section>
@@ -589,6 +589,11 @@
     <a class="whatsapp-float" href="https://wa.me/917600661149?text=Hello%20Hotel%20Gokul%20Inn%2C%20I%20want%20to%20book%20a%20room." target="_blank" rel="noopener" aria-label="Chat with Hotel Gokul Inn on WhatsApp">
       <i data-lucide="message-circle"></i>
       <span>WhatsApp</span>
+    </a>
+
+    <a class="chatbot-float" href="https://wa.me/917600661149?text=Hello%20Hotel%20Gokul%20Inn%2C%20I%20need%20help%20with%20booking." target="_blank" rel="noopener" aria-label="Chatbot booking help">
+      <i data-lucide="bot-message-square"></i>
+      <span>Chat</span>
     </a>
 
     <footer class="site-footer">
