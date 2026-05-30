@@ -400,10 +400,12 @@
   display: grid;
   gap: 12px;
   padding: 16px;
+  min-width: 0;
 }
 
 .inventory-card h3 {
-  font-size: 1.2rem;
+  font-size: 1.05rem;
+  line-height: 1.18;
 }
 
 .inventory-card label {
@@ -433,8 +435,23 @@
 
 .inventory-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 8px;
+}
+
+.availability-manager-card .admin-card-head {
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.availability-manager-card .admin-card-head h2 {
+  max-width: 880px;
+  font-size: clamp(2.1rem, 4vw, 3.7rem);
+}
+
+.availability-manager-card .admin-card-head p:not(.eyebrow) {
+  max-width: 880px;
+  margin-top: 12px;
 }
 
 .content-form {
