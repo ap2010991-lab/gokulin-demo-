@@ -79,6 +79,60 @@ const profile = {
   ]
 };
 
+const fiveStarReviews = [
+  { name: "advocate chandrakant", text: "Well organised and mannered staff with efficient management. Good AC, Smart TV, Wi-Fi, hot water, veg food and complimentary breakfast made our family stay fully satisfying." },
+  { name: "Jigar Chauhan", text: "Wonderful stay at a newly developed, clean and well-maintained property. Excellent food, prime location opposite Vapi Railway Station, spacious rooms and polite professional staff." },
+  { name: "Rupesh Nagle", text: "Very good hotel and very gentle staff. Just 200 meters from the railway station. The team even couriered back a watch forgotten in the room." },
+  { name: "Kumar Swami", text: "Amazing stay just outside Vapi railway station. Hotel staff were courteous and the food was amazing. Recommended." },
+  { name: "Kalpesh Kothari", text: "Very good location outside Vapi Railway Station. Decent room size for a business trip, good interiors, fresh restaurant food and helpful reception support." },
+  { name: "Ankur Hadiya", text: "Best hotel and restaurant in Vapi. Gokul Inn is right in front of Vapi Railway Station. Must stay here if you are visiting Vapi." },
+  { name: "Harrison Pritchard", text: "The room at Hotel Gokul was nice and spacious. The building is good quality, and the staff are very helpful." },
+  { name: "Balachandra Bhat", text: "Rooms were very clean, construction is new, with an attached hotel and a location right next to Vapi station." },
+  { name: "Shekhar S", text: "Spacious rooms, very supportive and cooperative staff, perfect location and value more than money." },
+  { name: "Himanshu Ruparel", text: "Just beside Vapi railway station platform number 3, near the market and with food options available close by." },
+  { name: "Chaitali Patel", text: "Nice experience with comfort and service. Buffet breakfast was awesome." },
+  { name: "WASIM MANZOOR", text: "Very caring about guests and everything there was fine." },
+  { name: "Dipak Prajapati", text: "Best hotel and rooms near Vapi station. Good and nice service at Hotel Gokul Inn." },
+  { name: "pranav bhatt", text: "Nice clean and hygienic rooms with polite staff." },
+  { name: "Gourav Khajuria", text: "Good food and very good person to serve the food." },
+  { name: "Rajat Subhra Mondal", text: "No. 1 hotel at Vapi. Best of the best. The food was best." },
+  { name: "sourabh pareek", text: "Good service and laundry also excellent." },
+  { name: "pavan jonpelliwar", text: "Good staff, good food and excellent stay." },
+  { name: "PRINCE KUMAR", text: "Best service overall. Staff is very cooperative." },
+  { name: "Monojit Dey", text: "Easy to access location, good property and very good overall." },
+  { name: "Raja Hindustani", text: "Nice stay and great hotel." },
+  { name: "Abdul Qayyum", text: "Good food and very cooperative staff. Enjoyed the stay." },
+  { name: "Mubarak Ali", text: "Best stay in Vapi." },
+  { name: "Samadhan Dabhade", text: "Service is awesome." },
+  { name: "sikkander seeni", text: "Very good service, nice dealing and quick response." },
+  { name: "Vijay Kumar", text: "Good hotel nearby railway station." },
+  { name: "Goraksh Surve", text: "Good and clean room." },
+  { name: "Dharmendr Kumar", text: "Nice room and good location." },
+  { name: "mohan pandit", text: "Very nice to observe." },
+  { name: "Vivek Rautela", text: "Ultimate service." },
+  { name: "Ahir Sanjay", text: "Best place in all Vapi location area." },
+  { name: "Manivannan Tnj", text: "Good quality with responsibility." },
+  { name: "Ahmed Tapale", text: "Staff is good." },
+  { name: "nakum Rakesh", text: "Very good." },
+  { name: "Soni Chetankumar", text: "Excellent room." },
+  { name: "amitkumar singh", text: "Overall everything is good." },
+  { name: "parag thacker", text: "Comfortable rooms." },
+  { name: "santosh sontakke", text: "Hotel is good. Take care of your clothes and belonging accessories." },
+  { name: "Sumit Singh", text: "Location is best." },
+  { name: "Niyant Thakkar", text: "Very nice place to stay." },
+  { name: "paruvolu prasad", text: "Good hotel to stay." },
+  { name: "Vinod Kumar", text: "Good for stay." },
+  { name: "Pramod MM", text: "Good room and service, all are good." },
+  { name: "rajendra vaghela", text: "Very nice." },
+  { name: "Srinivas Mogili", text: "Good maintenance." },
+  { name: "Abhay Rohilla", text: "Best stays in Vapi." },
+  { name: "Dheeru Kumar", text: "Nice hotel and very nice stay." },
+  { name: "Sanathana S", text: "Good location." },
+  { name: "Amit Kumar", text: "Excellent." },
+  { name: "Vikash Vikas", text: "Saandaar. Excellent experience." },
+  { name: "Parth Dhameliya", text: "Bahot he mast hotel hai or service bhi mast hai. Very great hotel and service too." }
+];
+
 const defaultContent = {
   heroTitle: "Hotel Gokul Inn & Banquet",
   heroCopy: "Where comfort meets luxury: a trusted hotel in Vapi near Vapi Railway Station with 53 thoughtful rooms, Madhuvan pure vegetarian restaurant, online booking, partial payment, and a versatile banquet hall for celebrations and corporate gatherings of up to 150 guests.",
@@ -602,6 +656,31 @@ function renderAmenities() {
   `).join("");
 }
 
+function renderFiveStarReviews() {
+  const track = byId("reviewTrack");
+  if (!track) return;
+
+  track.innerHTML = "";
+  [...fiveStarReviews, ...fiveStarReviews].forEach((review, index) => {
+    const card = document.createElement("article");
+    card.className = "review-card";
+    if (index >= fiveStarReviews.length) card.setAttribute("aria-hidden", "true");
+
+    const stars = document.createElement("span");
+    stars.className = "review-stars";
+    stars.textContent = "5-star Google review";
+
+    const quote = document.createElement("p");
+    quote.textContent = review.text;
+
+    const name = document.createElement("strong");
+    name.textContent = review.name;
+
+    card.append(stars, quote, name);
+    track.appendChild(card);
+  });
+}
+
 function getSelectedRoom() {
   return activeRooms().find((room) => room.id === byId("roomType").value) || activeRooms()[0] || profile.rooms[0];
 }
@@ -879,7 +958,7 @@ async function submitBanquetEnquiry(event) {
 
 function buildBooking(totals) {
   const paymentOption = document.querySelector("input[name='paymentOption']:checked")?.value || "full";
-  const paymentDue = paymentOption === "partial-300" ? 300 : paymentOption === "partial-500" ? 500 : totals.total;
+  const paymentDue = paymentOption === "partial-500" ? 500 : totals.total;
   const roomSelections = totals.lines.map((line) => ({
     roomId: line.room.id,
     room: line.room.name,
@@ -1202,6 +1281,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadSiteContent();
   renderRooms();
   renderAmenities();
+  renderFiveStarReviews();
   await loadPaymentConfig();
   await loadAvailability();
   initPageTabs();
