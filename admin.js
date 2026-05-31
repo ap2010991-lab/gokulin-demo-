@@ -9,7 +9,7 @@ const defaultRooms = [
   {
     id: "deluxe",
     name: "Deluxe Room",
-    size: "Premium comfort",
+    size: "150 sq.ft",
     bed: "King / Twin Bed",
     capacity: 2,
     image: "assets/gallery/room-bright.jpg",
@@ -20,7 +20,7 @@ const defaultRooms = [
   {
     id: "super-deluxe",
     name: "Super Deluxe Room",
-    size: "Enhanced comfort",
+    size: "180 sq.ft",
     bed: "King Bed",
     capacity: 2,
     image: "assets/gallery/room-premium.jpg",
@@ -31,7 +31,7 @@ const defaultRooms = [
   {
     id: "suite",
     name: "Suite Room",
-    size: "Spacious living area",
+    size: "250 sq.ft",
     bed: "King Bed",
     capacity: 2,
     image: "assets/gallery/suite-room.jpg",
@@ -42,7 +42,7 @@ const defaultRooms = [
   {
     id: "royal-suite",
     name: "Royal Suite",
-    size: "Top category",
+    size: "250 sq.ft",
     bed: "King Bed",
     capacity: 2,
     image: "assets/gallery/room-city-view.jpg",
@@ -64,6 +64,10 @@ const defaultContent = {
 
 const currency = (value) => `INR ${Math.round(Number(value || 0)).toLocaleString("en-IN")}`;
 const byId = (id) => document.getElementById(id);
+const storedUntil = (record) => {
+  const date = record.retainedUntil || new Date(new Date(record.createdAt || Date.now()).getTime() + 365 * 24 * 60 * 60 * 1000).toISOString();
+  return new Date(date).toLocaleDateString("en-IN");
+};
 let adminPin = "";
 let adminState = { bookings: [], inventory: {}, banquetBookings: [], content: structuredClone(defaultContent) };
 let activeAdminPage = "overview";
@@ -373,8 +377,9 @@ function renderBookings() {
       <td><strong>${booking.checkIn} to ${booking.checkOut}</strong><span>${booking.checkInTime || "12:00"} / ${booking.checkOutTime || "11:00"}</span></td>
       <td><strong>${currency(booking.paidAmount || booking.paymentDue)}</strong><span>Total ${currency(booking.total)} | Balance ${currency(booking.balanceDue)}</span></td>
       <td><span class="status-pill">${booking.paymentStatus || booking.status || "confirmed"}</span></td>
+      <td><span>${storedUntil(booking)}</span></td>
     </tr>
-  `).join("") : `<tr><td colspan="6">No booking found.</td></tr>`;
+  `).join("") : `<tr><td colspan="7">No booking found.</td></tr>`;
 }
 
 function renderBanquetBookings() {
@@ -391,8 +396,9 @@ function renderBanquetBookings() {
           ${["new", "contacted", "confirmed", "closed"].map((status) => `<option value="${status}" ${item.status === status ? "selected" : ""}>${status}</option>`).join("")}
         </select>
       </td>
+      <td><span>${storedUntil(item)}</span></td>
     </tr>
-  `).join("") : `<tr><td colspan="6">No banquet request found.</td></tr>`;
+  `).join("") : `<tr><td colspan="7">No banquet request found.</td></tr>`;
 
   document.querySelectorAll("[data-banquet-status]").forEach((select) => {
     select.addEventListener("change", async () => {

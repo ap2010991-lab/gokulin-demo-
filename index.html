@@ -528,11 +528,11 @@
                 <span>Check-out time</span>
                 <input type="time" id="checkOutTime" value="10:00" required />
               </label>
-              <label>
+              <label class="booking-hidden-field">
                 <span>Adults</span>
                 <input type="number" id="adultCount" min="1" max="99" value="2" required />
               </label>
-              <label>
+              <label class="booking-hidden-field">
                 <span>Children</span>
                 <input type="number" id="childCount" min="0" max="99" value="0" />
               </label>
@@ -553,8 +553,8 @@
                 <textarea id="specialRequest" rows="3" placeholder="Early arrival, meal preference, extra bedding..."></textarea>
               </label>
             </div>
-            <div class="toggle-row booking-hidden-field">
-              <label><input type="checkbox" id="mealPlan" checked /> Include breakfast rate</label>
+            <input type="checkbox" id="mealPlan" checked hidden />
+            <div class="toggle-row">
               <label><input type="checkbox" id="pickup" /> Request local pickup help</label>
             </div>
             <div class="payment-choice">

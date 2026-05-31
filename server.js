@@ -23,6 +23,8 @@ const banquetBookingsPath = path.join(__dirname, "data", "banquet-bookings.json"
 const contentPath = path.join(__dirname, "data", "content.json");
 const adminPin = process.env.ADMIN_PIN || "3456";
 const allowedAdminPins = new Set([adminPin, "3456"].filter(Boolean));
+const bookingRetentionDays = 365;
+const bookingRetentionMs = bookingRetentionDays * 24 * 60 * 60 * 1000;
 
 async function readJson(filePath, fallback) {
   try {
@@ -46,6 +48,20 @@ function requireAdmin(req, res) {
   return true;
 }
 
+function withBookingRetention(record = {}) {
+  const createdAt = record.createdAt || new Date().toISOString();
+  const retainedUntil = record.retainedUntil || new Date(new Date(createdAt).getTime() + bookingRetentionMs).toISOString();
+  return { ...record, createdAt, retainedUntil };
+}
+
+function oneYearRecords(records = []) {
+  const now = Date.now();
+  return records.filter((record) => {
+    const createdAt = new Date(record.createdAt || record.checkIn || record.eventDate || now).getTime();
+    return Number.isFinite(createdAt) && now - createdAt <= bookingRetentionMs;
+  });
+}
+
 app.use(express.json());
 app.use(express.static(__dirname));
 
@@ -58,7 +74,7 @@ app.get("/api/payment-config", (_req, res) => {
 
 app.get("/api/availability", async (_req, res) => {
   const inventory = await readJson(inventoryPath, {});
-  const bookings = await readJson(bookingsPath, []);
+  const bookings = oneYearRecords(await readJson(bookingsPath, []));
   res.json({ inventory, bookings });
 });
 
@@ -76,9 +92,9 @@ app.patch("/api/content", async (req, res) => {
 app.get("/api/bookings", async (req, res) => {
   if (!requireAdmin(req, res)) return;
   const inventory = await readJson(inventoryPath, {});
-  const bookings = await readJson(bookingsPath, []);
-  const banquetBookings = await readJson(banquetBookingsPath, []);
-  res.json({ inventory, bookings, banquetBookings });
+  const bookings = oneYearRecords(await readJson(bookingsPath, []));
+  const banquetBookings = oneYearRecords(await readJson(banquetBookingsPath, []));
+  res.json({ inventory, bookings, banquetBookings, retentionDays: bookingRetentionDays });
 });
 
 app.post("/api/bookings", async (req, res) => {
@@ -90,11 +106,10 @@ app.post("/api/bookings", async (req, res) => {
 
   const bookings = await readJson(bookingsPath, []);
   const withoutDuplicate = bookings.filter((item) => item.id !== booking.id);
-  const savedBooking = {
+  const savedBooking = withBookingRetention({
     ...booking,
-    status: booking.status || "confirmed",
-    createdAt: booking.createdAt || new Date().toISOString()
-  };
+    status: booking.status || "confirmed"
+  });
   withoutDuplicate.unshift(savedBooking);
   await writeJson(bookingsPath, withoutDuplicate);
   res.json({ booking: savedBooking });
@@ -122,11 +137,10 @@ app.post("/api/banquet-bookings", async (req, res) => {
   }
 
   const enquiries = await readJson(banquetBookingsPath, []);
-  const savedEnquiry = {
+  const savedEnquiry = withBookingRetention({
     ...enquiry,
-    status: enquiry.status || "new",
-    createdAt: enquiry.createdAt || new Date().toISOString()
-  };
+    status: enquiry.status || "new"
+  });
   enquiries.unshift(savedEnquiry);
   await writeJson(banquetBookingsPath, enquiries);
   res.json({ enquiry: savedEnquiry });

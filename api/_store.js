@@ -15,6 +15,23 @@ const defaults = {
   content: {}
 };
 
+export const bookingRetentionDays = 365;
+const bookingRetentionMs = bookingRetentionDays * 24 * 60 * 60 * 1000;
+
+export function withBookingRetention(record = {}) {
+  const createdAt = record.createdAt || new Date().toISOString();
+  const retainedUntil = record.retainedUntil || new Date(new Date(createdAt).getTime() + bookingRetentionMs).toISOString();
+  return { ...record, createdAt, retainedUntil };
+}
+
+export function oneYearRecords(records = []) {
+  const now = Date.now();
+  return records.filter((record) => {
+    const createdAt = new Date(record.createdAt || record.checkIn || record.eventDate || now).getTime();
+    return Number.isFinite(createdAt) && now - createdAt <= bookingRetentionMs;
+  });
+}
+
 export function requireAdmin(request, response) {
   const adminPin = process.env.ADMIN_PIN || "3456";
   const allowedAdminPins = new Set([adminPin, "3456"].filter(Boolean));

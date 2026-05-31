@@ -1,4 +1,4 @@
-import { readStore, requireAdmin, writeStore } from "./_store.js";
+import { oneYearRecords, readStore, requireAdmin, withBookingRetention, writeStore } from "./_store.js";
 
 export default async function handler(request, response) {
   if (request.method === "POST") {
@@ -9,11 +9,10 @@ export default async function handler(request, response) {
     }
 
     const banquetBookings = await readStore("banquetBookings");
-    const savedEnquiry = {
+    const savedEnquiry = withBookingRetention({
       ...enquiry,
-      status: enquiry.status || "new",
-      createdAt: enquiry.createdAt || new Date().toISOString()
-    };
+      status: enquiry.status || "new"
+    });
     await writeStore("banquetBookings", [savedEnquiry, ...banquetBookings]);
     response.status(200).json({ enquiry: savedEnquiry });
     return;
@@ -27,7 +26,7 @@ export default async function handler(request, response) {
       return;
     }
 
-    const banquetBookings = await readStore("banquetBookings");
+    const banquetBookings = oneYearRecords(await readStore("banquetBookings"));
     const updated = banquetBookings.map((item) => item.id === id ? { ...item, status } : item);
     await writeStore("banquetBookings", updated);
     response.status(200).json({ banquetBookings: updated });

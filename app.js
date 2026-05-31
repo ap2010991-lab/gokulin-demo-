@@ -23,7 +23,7 @@ const profile = {
     {
       id: "deluxe",
       name: "Deluxe Room",
-      size: "Premium comfort",
+      size: "150 sq.ft",
       bed: "King / Twin Bed",
       bathrooms: 1,
       capacity: 2,
@@ -32,12 +32,12 @@ const profile = {
         withoutBreakfast: { single: 1349, double: 1599 }
       },
       image: "assets/gallery/room-bright.jpg",
-      features: ["Breakfast option", "High-speed Wi-Fi", "Tea/Coffee maker", "Private bathroom"]
+      features: ["Premium comfort", "Breakfast option", "High-speed Wi-Fi", "Tea/Coffee maker", "Private bathroom"]
     },
     {
       id: "super-deluxe",
       name: "Super Deluxe Room",
-      size: "Enhanced comfort",
+      size: "180 sq.ft",
       bed: "King Bed",
       bathrooms: 1,
       capacity: 2,
@@ -51,7 +51,7 @@ const profile = {
     {
       id: "suite",
       name: "Suite Room",
-      size: "Spacious living area",
+      size: "250 sq.ft",
       bed: "King Bed",
       bathrooms: 1,
       capacity: 2,
@@ -65,7 +65,7 @@ const profile = {
     {
       id: "royal-suite",
       name: "Royal Suite",
-      size: "Top category",
+      size: "250 sq.ft",
       bed: "King Bed",
       bathrooms: 1,
       capacity: 2,
@@ -170,6 +170,8 @@ const extraBedRates = {
   withBreakfast: 599,
   withoutBreakfast: 499
 };
+const gstRate = 0.05;
+const razorpayFeeRate = 0.02;
 
 function getRoomRate(room, guests = 2, roomCount = 1, includeBreakfast = true) {
   const planKey = includeBreakfast ? "withBreakfast" : "withoutBreakfast";
@@ -416,19 +418,27 @@ function bindDatePicker() {
     });
   });
 
+  picker.addEventListener("pointerdown", (event) => {
+    event.stopPropagation();
+  });
+
   picker.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     const previous = event.target.closest("[data-calendar-prev]");
     const next = event.target.closest("[data-calendar-next]");
     const day = event.target.closest("[data-date]");
 
     if (previous) {
       calendarState.month.setMonth(calendarState.month.getMonth() - 1);
+      picker.hidden = false;
       renderDatePicker();
       return;
     }
 
     if (next) {
       calendarState.month.setMonth(calendarState.month.getMonth() + 1);
+      picker.hidden = false;
       renderDatePicker();
       return;
     }
@@ -715,8 +725,11 @@ function calculateTotal() {
   const items = getSelectedRoomItems();
   const fallbackRoom = getSelectedRoom();
   const selectedItems = items.length ? items : [{ room: fallbackRoom, roomId: fallbackRoom.id, count: Number(byId("roomCount").value || 1), includeBreakfast: byId("mealPlan").checked, extraBed: false }];
+  let remainingGuestsForRates = guests;
   const lines = selectedItems.map((item) => {
-    const rate = getRoomRate(item.room, item.room.capacity, item.count, item.includeBreakfast !== false);
+    const chargeableGuests = Math.max(1, Math.min(remainingGuestsForRates, item.room.capacity * Number(item.count || 1)));
+    remainingGuestsForRates = Math.max(0, remainingGuestsForRates - chargeableGuests);
+    const rate = getRoomRate(item.room, chargeableGuests, item.count, item.includeBreakfast !== false);
     const extraBedCount = item.room.id !== "deluxe" && item.extraBed ? item.count : 0;
     const roomTotal = rate.amount * nights * item.count;
     const extraBedTotal = extraBedCount * extraBedRates.withBreakfast * nights;
@@ -734,10 +747,11 @@ function calculateTotal() {
   const roomCount = lines.reduce((sum, line) => sum + Number(line.count || 0), 0);
   const capacity = lines.reduce((sum, line) => sum + line.capacity, 0);
   const base = lines.reduce((sum, line) => sum + line.total, 0);
-  const taxes = 0;
+  const taxes = Math.round(base * gstRate);
   const meal = 0;
   const pickup = byId("pickup").checked ? 900 : 0;
-  const total = base + taxes + meal + pickup;
+  const razorpayFee = Math.round((base + taxes + pickup) * razorpayFeeRate);
+  const total = base + taxes + meal + pickup + razorpayFee;
 
   byId("totalAmount").textContent = formatMoney(total);
   byId("roomCount").value = roomCount || 1;
@@ -745,7 +759,7 @@ function calculateTotal() {
   byId("bookingMessage").textContent = guests > capacity ? `Selected rooms support ${capacity} guest(s). Add more rooms or extra bed to continue.` : "";
   renderSelectedStaySummary({ lines, nights, roomCount, guests, adults, children, total });
 
-  return { room, lines, nights, roomCount, guests, adults, children, base, taxes, meal, pickup, total, capacity, rate: lines[0].rate, includeBreakfast: lines.every((line) => line.includeBreakfast !== false) };
+  return { room, lines, nights, roomCount, guests, adults, children, base, taxes, razorpayFee, meal, pickup, total, capacity, rate: lines[0].rate, includeBreakfast: lines.every((line) => line.includeBreakfast !== false) };
 }
 
 function renderSelectedStaySummary({ lines = [], nights, roomCount, guests, adults, children, total }) {
@@ -989,6 +1003,11 @@ function buildBooking(totals) {
     roomCount: totals.roomCount,
     ratePlan: roomSelections.map((line) => `${line.room}: ${line.ratePlan}`).join(" | "),
     occupancy: roomSelections.map((line) => `${line.room}: ${line.occupancy}`).join(" | "),
+    roomCharge: totals.base,
+    gstAmount: totals.taxes,
+    gstRate: "5%",
+    razorpayFee: totals.razorpayFee,
+    razorpayFeeRate: "2%",
     total: totals.total,
     paymentOption,
     paymentDue,
@@ -1005,7 +1024,10 @@ function renderPaymentSummary(message = "") {
     <div><span>Room</span><strong>${booking.room}</strong></div>
     <div><span>Dates</span><strong>${booking.checkIn} to ${booking.checkOut}</strong></div>
     <div><span>Guests</span><strong>${booking.guests}</strong></div>
-    <div><span>Total</span><strong>${formatMoney(booking.total)}</strong></div>
+    <div><span>Room charge</span><strong>${formatMoney(booking.roomCharge || booking.total)}</strong></div>
+    <div><span>GST 5%</span><strong>${formatMoney(booking.gstAmount || 0)}</strong></div>
+    <div><span>Razorpay charge 2%</span><strong>${formatMoney(booking.razorpayFee || 0)}</strong></div>
+    <div><span>Total payable</span><strong>${formatMoney(booking.total)}</strong></div>
     <div><span>Pay now</span><strong>${formatMoney(booking.paymentDue)}</strong></div>
     <div><span>Pay at counter</span><strong>${formatMoney(booking.balanceDue)}</strong></div>
     ${message ? `<p class="payment-hint">${message}</p>` : ""}

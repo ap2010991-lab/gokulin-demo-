@@ -1,12 +1,12 @@
-import { readStore, requireAdmin, writeStore } from "./_store.js";
+import { bookingRetentionDays, oneYearRecords, readStore, requireAdmin, withBookingRetention, writeStore } from "./_store.js";
 
 export default async function handler(request, response) {
   if (request.method === "GET") {
     if (!requireAdmin(request, response)) return;
     const inventory = await readStore("inventory");
-    const bookings = await readStore("bookings");
-    const banquetBookings = await readStore("banquetBookings");
-    response.status(200).json({ inventory, bookings, banquetBookings });
+    const bookings = oneYearRecords(await readStore("bookings"));
+    const banquetBookings = oneYearRecords(await readStore("banquetBookings"));
+    response.status(200).json({ inventory, bookings, banquetBookings, retentionDays: bookingRetentionDays });
     return;
   }
 
@@ -18,11 +18,10 @@ export default async function handler(request, response) {
     }
 
     const bookings = await readStore("bookings");
-    const savedBooking = {
+    const savedBooking = withBookingRetention({
       ...booking,
-      status: booking.status || "confirmed",
-      createdAt: booking.createdAt || new Date().toISOString()
-    };
+      status: booking.status || "confirmed"
+    });
     await writeStore("bookings", [savedBooking, ...bookings.filter((item) => item.id !== booking.id)]);
     response.status(200).json({ booking: savedBooking });
     return;
